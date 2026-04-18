@@ -16,6 +16,7 @@ interface SubscriptionState {
   fetchSubscriptions: () => Promise<void>;
   addSubscription: (sub: Omit<Subscription, 'id'> & { id?: string }) => Promise<void>;
   removeSubscription: (id: string) => Promise<void>;
+  updateSubscription: (id: string, sub: Partial<Subscription>) => Promise<void>;
   archiveSubscription: (id: string, isArchived: boolean) => Promise<void>;
   wipeData: () => Promise<void>;
   importData: (json: string) => Promise<void>;
@@ -74,6 +75,22 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
       await get().fetchSubscriptions();
     } catch (err: any) {
       set({ error: err.message || "Failed to kill subscription", isLoading: false });
+    }
+  },
+
+  updateSubscription: async (id, sub) => {
+    set({ isLoading: true, error: null });
+    try {
+      const existing = get().subscriptions.find(s => s.id === id) || 
+                       get().archivedSubscriptions.find(s => s.id === id);
+      
+      if (!existing) throw new Error("Sentinel not found");
+
+      const updated = { ...existing, ...sub };
+      await subscriptionRepository.save(updated);
+      await get().fetchSubscriptions();
+    } catch (err: any) {
+      set({ error: err.message || "Failed to update sentinel", isLoading: false });
     }
   },
 

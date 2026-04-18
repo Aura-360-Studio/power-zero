@@ -46,8 +46,20 @@ export const SplashScreen: React.FC = () => {
       </div>
 
       {/* Loading Progress Line */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-32 h-[2px] bg-white/5 overflow-hidden rounded-full">
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-32 h-[2px] bg-white/5 overflow-hidden rounded-full">
         <div className="h-full bg-accent animate-loading-bar" />
+      </div>
+
+      {/* Attribution */}
+      <div className="absolute bottom-10 left-0 right-0 text-center">
+        <a 
+          href="https://aura360studio.com/showcase" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-[8px] font-black tracking-[0.3em] text-zinc-600 hover:text-accent transition-colors uppercase"
+        >
+          Powered by Aura 360 Studio
+        </a>
       </div>
 
       <style>{`

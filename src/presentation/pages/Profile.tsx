@@ -82,8 +82,6 @@ export const Profile: React.FC = () => {
           </div>
         </section>
         
-        <PWAInstallCard />
-
         {/* Utility Preferences */}
         <section>
           <div className="flex items-center gap-2 mb-4 px-2">
@@ -171,6 +169,18 @@ export const Profile: React.FC = () => {
           </div>
         </section>
 
+        <PWAInstallCard />
+
+        <div className="py-10 text-center border-t border-white/5">
+          <a 
+            href="https://aura360studio.com/showcase" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-[9px] font-black tracking-[0.4em] text-zinc-600 hover:text-accent transition-colors uppercase italic"
+          >
+            Powered by Aura 360 Studio
+          </a>
+        </div>
       </div>
     </div>
   );

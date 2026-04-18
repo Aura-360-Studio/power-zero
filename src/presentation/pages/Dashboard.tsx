@@ -5,6 +5,7 @@ import { CategoryReports } from '../components/organisms/CategoryReports';
 import { SubscriptionRow } from '../components/molecules/SubscriptionRow';
 import { useRouterStore } from '../store/useRouterStore';
 import { ShieldCheck } from 'lucide-react';
+import { PWAInstallCard } from '../components/atoms/PWAInstallCard';
 
 export const Dashboard: React.FC = () => {
   const { subscriptions, fetchSubscriptions, removeSubscription } = useSubscriptionStore();
@@ -49,6 +50,10 @@ export const Dashboard: React.FC = () => {
             ))}
           </div>
         )}
+      </div>
+
+      <div className="px-2 pb-10">
+        <PWAInstallCard />
       </div>
     </div>
   );

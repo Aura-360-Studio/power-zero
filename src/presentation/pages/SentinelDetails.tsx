@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Archive, Trash2, ShieldAlert } from 'lucide-react';
+import { ChevronDown, ChevronUp, Archive, Trash2, ShieldAlert, Edit2 } from 'lucide-react';
 import { useRouterStore } from '../store/useRouterStore';
 import { useSubscriptionStore } from '../store/useSubscriptionStore';
 import { DataPill } from '../components/atoms/DataPill';
+import { EditSubscriptionDrawer } from '../components/organisms/EditSubscriptionDrawer';
 
 export const SentinelDetails: React.FC = () => {
   const { selectedSubscriptionId, navigate } = useRouterStore();
   const { subscriptions, archivedSubscriptions, removeSubscription, archiveSubscription } = useSubscriptionStore();
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+  const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
 
   const subscription = subscriptions.find(s => s.id === selectedSubscriptionId) || 
                        archivedSubscriptions.find(s => s.id === selectedSubscriptionId);
@@ -50,6 +52,13 @@ export const SentinelDetails: React.FC = () => {
           &larr; Dashboard
         </button>
         <div className="flex gap-2">
+          <button 
+            onClick={() => setIsEditDrawerOpen(true)}
+            className="p-2 text-zinc-500 hover:text-accent transition-colors"
+            title="Edit"
+          >
+            <Edit2 size={20} />
+          </button>
           <button 
             onClick={handleArchive}
             className={`p-2 transition-colors ${subscription.isArchived ? 'text-accent' : 'text-zinc-500 hover:text-accent'}`}
@@ -120,6 +129,13 @@ export const SentinelDetails: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Edit Drawer */}
+      <EditSubscriptionDrawer 
+        isOpen={isEditDrawerOpen} 
+        onClose={() => setIsEditDrawerOpen(false)} 
+        subscription={subscription}
+      />
     </div>
   );
 };
