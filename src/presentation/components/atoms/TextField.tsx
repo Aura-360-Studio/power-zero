@@ -5,7 +5,7 @@ export const TextField = React.forwardRef<HTMLInputElement, React.InputHTMLAttri
     return (
       <input
         ref={ref}
-        className={`appearance-none bg-transparent rounded-none border-b py-2 text-gray-900 font-mono focus:outline-none transition-colors border-gray-300 focus:border-gray-900 disabled:opacity-50 w-full ${className}`}
+        className={`appearance-none bg-transparent rounded-none border-b py-2 text-zinc-100 placeholder:text-zinc-500 font-mono focus:outline-none transition-colors border-white/20 focus:border-accent disabled:opacity-50 w-full ${className}`}
         {...props}
       />
     );

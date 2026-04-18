@@ -14,3 +14,11 @@ export class CurrencyCalculator {
     return atomicAmount / 100;
   }
 }
+
+export const formatCurrency = (amount: number, currency: string = 'INR') => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: currency,
+    maximumFractionDigits: 0,
+  }).format(amount);
+};

@@ -51,6 +51,35 @@ export class SubscriptionRepository {
       await db.subscriptions.put(sub);
     });
   }
+
+  /**
+   * Toggles the archive state of a subscription.
+   */
+  async updateArchiveStatus(id: string, isArchived: boolean): Promise<void> {
+    await db.transaction('rw', db.subscriptions, async () => {
+      const sub = await db.subscriptions.get(id);
+      if (!sub) {
+        throw new Error(`Subscription with ID ${id} not found.`);
+      }
+      
+      sub.isArchived = isArchived;
+      await db.subscriptions.put(sub);
+    });
+  }
+
+  /**
+   * Wipes all data from the subscriptions table.
+   */
+  async clearAll(): Promise<void> {
+    await db.subscriptions.clear();
+  }
+
+  /**
+   * Ingests a list of subscriptions, replacing existing ones with the same ID.
+   */
+  async bulkImport(subs: Subscription[]): Promise<void> {
+    await db.subscriptions.bulkPut(subs);
+  }
 }
 
 export const subscriptionRepository = new SubscriptionRepository();

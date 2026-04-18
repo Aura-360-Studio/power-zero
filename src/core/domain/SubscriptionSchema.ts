@@ -29,7 +29,8 @@ export const SubscriptionSchema = z.object({
   category: CategoryEnum,
   cycle: CycleEnum,
   nextBillingDate: z.string().datetime({ message: "Invalid ISO 8601 date string" }),
-  status: StatusEnum
+  status: StatusEnum,
+  isArchived: z.boolean().default(false)
 });
 
 export type ValidatedSubscription = z.infer<typeof SubscriptionSchema>;

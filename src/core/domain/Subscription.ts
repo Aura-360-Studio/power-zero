@@ -6,4 +6,5 @@ export interface Subscription {
   cycle: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
   nextBillingDate: string;
   status: 'ACTIVE' | 'CANCELLED' | 'PAUSED';
+  isArchived: boolean;
 }

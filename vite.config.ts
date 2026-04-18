@@ -10,18 +10,27 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg'],
       manifest: {
         name: 'Power Zero Sentinel',
-        short_name: 'Zhero',
+        short_name: 'PZ Sentinel',
         description: 'Privacy-first wealth leak sentinel',
-        theme_color: '#000000',
-        background_color: '#ffffff',
+        theme_color: '#121212',
+        background_color: '#121212',
         display: 'standalone',
+        orientation: 'portrait',
         icons: [
           {
-            src: 'https://labs.aura360studio.com/favicon.ico',
+            src: 'favicon.svg',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
+          },
+          {
+            src: 'favicon.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
           }
         ]
       }

@@ -3,6 +3,7 @@ import { Trash2 } from 'lucide-react';
 import type { Subscription } from '../../../core/domain/Subscription';
 import { DataPill } from '../atoms/DataPill';
 import { IconButton } from '../atoms/IconButton';
+import { useRouterStore } from '../../store/useRouterStore';
 
 interface SubscriptionRowProps {
   subscription: Subscription;
@@ -10,30 +11,38 @@ interface SubscriptionRowProps {
 }
 
 export const SubscriptionRow: React.FC<SubscriptionRowProps> = ({ subscription, onKill }) => {
+  const { navigate } = useRouterStore();
+
   return (
-    <div className="flex flex-row items-center justify-between py-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 px-2 rounded transition-colors group">
+    <div 
+      onClick={() => subscription.id && navigate('details', { id: subscription.id })}
+      className="flex flex-row items-center justify-between py-4 border-b border-white/5 last:border-0 hover:bg-white/5 px-2 rounded-xl transition-all cursor-pointer group"
+    >
       
       {/* Left Column: Context */}
       <div className="flex flex-col items-start gap-1">
-        <span className="font-bold text-gray-900 tracking-tight">{subscription.name}</span>
+        <span className="font-bold text-zinc-100 tracking-tight">{subscription.name}</span>
         <DataPill label={subscription.category} />
       </div>
 
       {/* Center Column: Alert Timing */}
-      <div className="text-sm font-mono text-gray-500 hidden sm:block tracking-tight">
+      <div className="text-sm font-mono text-zinc-500 hidden sm:block tracking-tight">
         {new Date(subscription.nextBillingDate).toLocaleDateString()}
       </div>
 
       {/* Right Column: Values & Actions */}
       <div className="flex flex-row items-center gap-4">
-        <span className="font-mono font-bold text-gray-900 tracking-tight">
-          {subscription.amount.toFixed(2)}
+        <span className="font-mono font-bold text-zinc-100 tracking-tight">
+          ₹{subscription.amount.toFixed(2)}
         </span>
         <div className="opacity-0 group-hover:opacity-100 transition-opacity">
           <IconButton 
             icon={Trash2} 
             variant="danger" 
-            onClick={() => subscription.id ? onKill(subscription.id) : null} 
+            onClick={(e) => {
+              e.stopPropagation();
+              subscription.id ? onKill(subscription.id) : null;
+            }} 
             title="Kill Subscription"
           />
         </div>
