@@ -8,6 +8,8 @@ import { X, CheckCircle2 } from 'lucide-react';
 import { z } from 'zod';
 import type { Subscription } from '../../../core/domain/Subscription';
 
+import { BillingCalculator } from '../../../core/utils/BillingCalculator';
+
 interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -16,48 +18,81 @@ interface DrawerProps {
 
 export const EditSubscriptionDrawer: React.FC<DrawerProps> = ({ isOpen, onClose, subscription }) => {
   const { updateSubscription } = useSubscriptionStore();
+  
+  // Migration logic for initial state
+  const normalized = BillingCalculator.migrateLegacySubscription(subscription);
+
   const [formData, setFormData] = useState({
-    name: subscription.name,
-    amount: subscription.amount.toString(),
-    category: subscription.category,
-    cycle: subscription.cycle,
-    nextBillingDate: new Date(subscription.nextBillingDate).toISOString().split('T')[0]
+    name: normalized.name,
+    amount: normalized.amount.toString(),
+    category: normalized.category,
+    cycleType: normalized.cycleType,
+    cycleValue: normalized.cycleValue.toString(),
+    startDate: new Date(normalized.startDate).toISOString().split('T')[0]
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [successToast, setSuccessToast] = useState(false);
 
   // Sync with prop changes
   useEffect(() => {
+    const norm = BillingCalculator.migrateLegacySubscription(subscription);
     setFormData({
-      name: subscription.name,
-      amount: subscription.amount.toString(),
-      category: subscription.category,
-      cycle: subscription.cycle,
-      nextBillingDate: new Date(subscription.nextBillingDate).toISOString().split('T')[0]
+      name: norm.name,
+      amount: norm.amount.toString(),
+      category: norm.category,
+      cycleType: norm.cycleType,
+      cycleValue: norm.cycleValue.toString(),
+      startDate: new Date(norm.startDate).toISOString().split('T')[0]
     });
   }, [subscription]);
 
   if (!isOpen && !successToast) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value as any }));
+    let value = e.target.value;
+    
+    // Strict validation for Interval Value to prevent zero/negative/empty states
+    if (e.target.name === 'cycleValue') {
+      const numValue = parseInt(value);
+      if (value === '' || isNaN(numValue) || numValue < 1) {
+        value = '1';
+      }
+    }
+    
+    setFormData(prev => ({ ...prev, [e.target.name]: value as any }));
   };
 
   const handleUpdate = async () => {
     setErrors({});
     
+    const cycleVal = parseInt(formData.cycleValue) || 1;
+    
+    const scheduleChanged = 
+      formData.startDate !== new Date(normalized.startDate).toISOString().split('T')[0] ||
+      formData.cycleType !== normalized.cycleType ||
+      cycleVal !== normalized.cycleValue;
+
+    let nextDate = subscription.nextBillingDate;
+    if (scheduleChanged) {
+      nextDate = BillingCalculator.calculateNextBillingDate(
+        new Date(formData.startDate), 
+        formData.cycleType, 
+        cycleVal
+      );
+    }
+
     const payload = {
       name: formData.name,
       amount: parseFloat(formData.amount),
       category: formData.category,
-      cycle: formData.cycle,
-      nextBillingDate: new Date(formData.nextBillingDate).toISOString(),
+      cycleType: formData.cycleType,
+      cycleValue: cycleVal,
+      startDate: new Date(formData.startDate).toISOString(),
+      nextBillingDate: nextDate,
     };
 
     try {
-      // Validate logically completely external to the store to maintain pristine state
       SubscriptionSchema.partial().parse(payload);
-      
       await updateSubscription(subscription.id!, payload as any);
       
       setSuccessToast(true);
@@ -79,6 +114,7 @@ export const EditSubscriptionDrawer: React.FC<DrawerProps> = ({ isOpen, onClose,
 
   return createPortal(
     <>
+      {/* ... (keep overlay and toast) ... */}
       <div 
         className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] transition-opacity duration-300 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} 
         onClick={onClose}
@@ -127,24 +163,71 @@ export const EditSubscriptionDrawer: React.FC<DrawerProps> = ({ isOpen, onClose,
               </select>
             </FormGroup>
 
-            <FormGroup label="Time Cycle" error={errors.cycle}>
-              <select 
-                name="cycle" 
-                value={formData.cycle} 
-                onChange={handleChange}
-                className="w-full bg-white/5 rounded-xl border border-white/10 focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
-              >
-                <option value="MONTHLY">MONTHLY</option>
-                <option value="YEARLY">YEARLY</option>
-                <option value="WEEKLY">WEEKLY</option>
-                <option value="DAILY">DAILY</option>
-              </select>
+            <FormGroup label="Start Date" error={errors.startDate}>
+               <TextField name="startDate" type="date" value={formData.startDate} onChange={handleChange} />
             </FormGroup>
           </div>
 
-          <FormGroup label="Next Billing Date" error={errors.nextBillingDate}>
-             <TextField name="nextBillingDate" type="date" value={formData.nextBillingDate} onChange={handleChange} />
-          </FormGroup>
+          <div className="grid grid-cols-2 gap-6">
+            <FormGroup label="Frequency" error={errors.cycleType}>
+              <select 
+                name="frequencySelection" 
+                value={
+                  formData.cycleType === 'CALENDAR_MONTH' && formData.cycleValue === '1' ? 'MONTHLY' :
+                  formData.cycleType === 'CALENDAR_YEAR' ? 'YEARLY' :
+                  formData.cycleType === 'DAYS' ? 'CUSTOM_DAYS' : 'CUSTOM_MONTHS'
+                }
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === 'MONTHLY') {
+                    setFormData(prev => ({ ...prev, cycleType: 'CALENDAR_MONTH', cycleValue: '1' }));
+                  } else if (val === 'YEARLY') {
+                    setFormData(prev => ({ ...prev, cycleType: 'CALENDAR_YEAR', cycleValue: '1' }));
+                  } else if (val === 'CUSTOM_DAYS') {
+                    setFormData(prev => ({ ...prev, cycleType: 'DAYS', cycleValue: '28' }));
+                  } else {
+                    setFormData(prev => ({ ...prev, cycleType: 'CALENDAR_MONTH', cycleValue: '3' }));
+                  }
+                }}
+                className="w-full bg-white/5 rounded-xl border border-white/10 focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
+              >
+                <option value="MONTHLY">Monthly</option>
+                <option value="YEARLY">Yearly</option>
+                <option value="CUSTOM_MONTHS">Custom Months</option>
+                <option value="CUSTOM_DAYS">Custom Days</option>
+              </select>
+            </FormGroup>
+
+            {formData.cycleType === 'CALENDAR_MONTH' && formData.cycleValue !== '1' && (
+              <FormGroup label="Every [X] Months" error={errors.cycleValue}>
+                <TextField 
+                  name="cycleValue" 
+                  type="number" 
+                  min="2"
+                  step="1"
+                  value={formData.cycleValue} 
+                  onChange={handleChange} 
+                  placeholder="3" 
+                  title="Interval must be 2 or greater"
+                />
+              </FormGroup>
+            )}
+
+            {formData.cycleType === 'DAYS' && (
+              <FormGroup label="Every [X] Days" error={errors.cycleValue}>
+                <TextField 
+                  name="cycleValue" 
+                  type="number" 
+                  min="1"
+                  step="1"
+                  value={formData.cycleValue} 
+                  onChange={handleChange} 
+                  placeholder="28" 
+                  title="Interval must be 1 or greater"
+                />
+              </FormGroup>
+            )}
+          </div>
 
         </div>
 

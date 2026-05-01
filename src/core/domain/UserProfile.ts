@@ -2,16 +2,18 @@ export interface UserProfile {
   id?: number;
   name: string;
   currency: string;
-  theme: 'dark' | 'light';
+  theme: 'dark' | 'light' | 'system';
   avatarColor: string;
   totalNeutralized: number;
+  monthlyBudget: number;
 }
 
 export const defaultProfile: UserProfile = {
   id: 1,
   name: 'User Sentinel',
   currency: 'INR',
-  theme: 'dark',
+  theme: 'system',
   avatarColor: '#CCFF00',
-  totalNeutralized: 0
+  totalNeutralized: 0,
+  monthlyBudget: 0
 };

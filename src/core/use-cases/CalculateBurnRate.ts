@@ -1,4 +1,5 @@
 import { CurrencyCalculator } from '../utils/Currency';
+import { BillingCalculator } from '../utils/BillingCalculator';
 import type { Subscription } from '../domain/Subscription';
 
 export interface BurnRateMetrics {
@@ -14,18 +15,16 @@ export const CalculateBurnRate = (subscriptions: Subscription[]): BurnRateMetric
     // We only calculate leaks for ACTIVE subscriptions
     if (sub.status !== 'ACTIVE') return;
 
-    const atomicAmount = CurrencyCalculator.toAtomic(sub.amount);
+    // Migrate if needed (defensive)
+    const normalizedSub = BillingCalculator.migrateLegacySubscription(sub);
+
+    const annualAmount = BillingCalculator.getYearlySpend(
+      normalizedSub.amount, 
+      normalizedSub.cycleType, 
+      normalizedSub.cycleValue
+    );
     
-    switch (sub.cycle) {
-      case 'DAILY':   
-        totalAnnualAtomic += (atomicAmount * 365); break;
-      case 'WEEKLY':  
-        totalAnnualAtomic += (atomicAmount * 52);  break;
-      case 'MONTHLY': 
-        totalAnnualAtomic += (atomicAmount * 12);  break;
-      case 'YEARLY':  
-        totalAnnualAtomic += atomicAmount;       break;
-    }
+    totalAnnualAtomic += CurrencyCalculator.toAtomic(annualAmount);
   });
 
   return {

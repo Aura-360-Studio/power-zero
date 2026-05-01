@@ -15,16 +15,21 @@ export const CategoryReports: React.FC = () => {
                    sub.cycle === 'DAILY' ? sub.amount * 30 : 
                    sub.amount;
     
-    acc[sub.category] = (acc[sub.category] || 0) + amount;
+    if (!acc[sub.category]) {
+      acc[sub.category] = { amount: 0, count: 0 };
+    }
+    acc[sub.category].amount += amount;
+    acc[sub.category].count += 1;
     return acc;
-  }, {} as Record<string, number>);
+  }, {} as Record<string, { amount: number, count: number }>);
 
   const categories = Object.entries(categoryData)
-    .sort(([, a], [, b]) => b - a)
-    .map(([category, amount]) => ({
+    .sort(([, a], [, b]) => b.amount - a.amount)
+    .map(([category, data]) => ({
       category,
-      amount,
-      percentage: burnRate.monthly > 0 ? (amount / burnRate.monthly) * 100 : 0
+      amount: data.amount,
+      count: data.count,
+      percentage: burnRate.monthly > 0 ? (data.amount / burnRate.monthly) * 100 : 0
     }));
 
   if (activeSubs.length === 0) return null;
@@ -49,34 +54,56 @@ export const CategoryReports: React.FC = () => {
       </div>
 
       <div className="space-y-10">
-        {categories.map((item) => (
-          <div 
-            key={item.category} 
-            onClick={() => setSelectedCategory(selectedCategory === item.category ? null : item.category)}
-            className={`group cursor-pointer transition-all ${selectedCategory && selectedCategory !== item.category ? 'opacity-20 grayscale' : 'opacity-100'}`}
-          >
-            <div className="flex justify-between items-end mb-3">
-              <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${selectedCategory === item.category ? 'text-accent' : 'text-zinc-500 group-hover:text-zinc-300'}`}>
-                {item.category}
-              </span>
-              <span className="text-sm font-bold text-accent tracking-tighter">
-                {item.percentage.toFixed(0)}%
-              </span>
-            </div>
-            
-            {/* Progress Bar */}
-            <div className="h-[2px] w-full bg-zinc-800 mb-4 overflow-hidden rounded-full">
-              <div 
-                className="h-full bg-accent shadow-[0_0_10px_rgba(204,255,0,0.3)] transition-all duration-1000 ease-out" 
-                style={{ width: `${item.percentage}%` }}
-              />
-            </div>
+        {categories.map((item) => {
+          const getHeatColor = (pct: number) => {
+            if (pct > 60) return '#FF003D'; // Red
+            if (pct > 30) return '#FF8A00'; // Orange
+            return '#CCFF00'; // Yellow
+          };
+          
+          const heatColor = getHeatColor(item.percentage);
 
-            <div className="text-xl font-bold text-zinc-100 tracking-tighter">
-              ₹{item.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          return (
+            <div 
+              key={item.category} 
+              onClick={() => setSelectedCategory(selectedCategory === item.category ? null : item.category)}
+              className={`group cursor-pointer transition-all ${selectedCategory && selectedCategory !== item.category ? 'opacity-20 grayscale' : 'opacity-100'}`}
+            >
+              <div className="flex justify-between items-end mb-3">
+                <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${selectedCategory === item.category ? 'text-accent' : 'text-zinc-500 group-hover:text-zinc-300'}`}>
+                  {item.category}
+                </span>
+                <span className="text-sm font-bold tracking-tighter" style={{ color: heatColor }}>
+                  {item.percentage.toFixed(0)}%
+                </span>
+              </div>
+              
+              {/* Progress Bar */}
+              <div className="h-[2px] w-full bg-zinc-800 mb-4 overflow-hidden rounded-full">
+                <div 
+                  className="h-full transition-all duration-1000 ease-out" 
+                  style={{ 
+                    width: `${item.percentage}%`, 
+                    backgroundColor: heatColor,
+                    boxShadow: `0 0 10px ${heatColor}44`
+                  }}
+                />
+              </div>
+
+              <div className="flex justify-between items-end">
+                <div className="text-xl font-bold text-zinc-100 tracking-tighter leading-none">
+                  ₹{item.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+                <div className="flex items-baseline gap-1.5 leading-none">
+                  <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">
+                    {item.count === 1 ? 'sentinel' : 'sentinels'}
+                  </span>
+                  <span className="text-sm font-black transition-colors" style={{ color: heatColor }}>{item.count}</span>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

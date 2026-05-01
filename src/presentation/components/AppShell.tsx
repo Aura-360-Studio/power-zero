@@ -10,7 +10,9 @@ interface AppShellProps {
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { currentView, navigate } = useRouterStore();
+  const [showExitToast, setShowExitToast] = useState(false);
+  const [lastBackPress, setLastBackPress] = useState(0);
+  const { currentView, history, navigate, goBack } = useRouterStore();
   const { profile, fetchProfile } = useProfileStore();
   const mainRef = React.useRef<HTMLElement>(null);
 
@@ -25,6 +27,39 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   React.useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
+
+  // Handle Android/Browser Back Button
+  React.useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
+      
+      if (history.length > 1) {
+        goBack();
+        // Stay in the app by pushing state back
+        window.history.pushState(null, '', window.location.pathname);
+      } else {
+        const now = Date.now();
+        if (now - lastBackPress < 2000) {
+          // Allow exit - we don't push state back, so the next popstate will exit
+          window.history.back();
+        } else {
+          setLastBackPress(now);
+          setShowExitToast(true);
+          setTimeout(() => setShowExitToast(false), 2000);
+          // Stay in the app
+          window.history.pushState(null, '', window.location.pathname);
+        }
+      }
+    };
+
+    // Initial state to catch the first back button
+    window.history.pushState(null, '', window.location.pathname);
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [history, lastBackPress, goBack]);
 
   const initials = profile?.name ? profile.name.substring(0, 2).toUpperCase() : 'ST';
 
@@ -91,6 +126,16 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         </div>
         {/* Safe Structural Modals */}
         <AddSubscriptionDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+
+        {/* Transient Exit Toast */}
+        {showExitToast && (
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <div className="bg-zinc-800 text-zinc-100 px-6 py-3 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-3">
+              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+              <span className="text-sm font-bold tracking-tight">Press back again to exit</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

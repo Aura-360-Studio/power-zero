@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'Power Zero Sentinel',
-        short_name: 'PZ Sentinel',
+        name: 'Zhero',
+        short_name: 'Zhero',
         description: 'Privacy-first wealth leak sentinel',
         theme_color: '#121212',
         background_color: '#121212',
@@ -21,13 +21,13 @@ export default defineConfig({
         orientation: 'portrait',
         icons: [
           {
-            src: 'favicon.svg',
+            src: 'pwa-icon.svg',
             sizes: '192x192',
             type: 'image/svg+xml',
             purpose: 'any maskable'
           },
           {
-            src: 'favicon.svg',
+            src: 'pwa-icon.svg',
             sizes: '512x512',
             type: 'image/svg+xml',
             purpose: 'any maskable'

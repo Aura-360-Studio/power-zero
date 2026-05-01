@@ -5,6 +5,8 @@ import { backupService } from '../../infrastructure/utils/BackupService';
 import { CalculateBurnRate, type BurnRateMetrics } from '../../core/use-cases/CalculateBurnRate';
 import type { Subscription } from '../../core/domain/Subscription';
 
+import { BillingCalculator } from '../../core/utils/BillingCalculator';
+
 interface SubscriptionState {
   subscriptions: Subscription[];
   archivedSubscriptions: Subscription[];
@@ -34,7 +36,31 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
   fetchSubscriptions: async () => {
     set({ isLoading: true, error: null });
     try {
-      const allSubs = await subscriptionRepository.getAll();
+      let allSubs = await subscriptionRepository.getAll();
+      
+      // Auto-Renewal Engine: Check for past-due 'ACTIVE' Sentinels
+      let needsRefresh = false;
+      const now = new Date().toISOString();
+      
+      for (const sub of allSubs) {
+        if (sub.status === 'ACTIVE' && !sub.isArchived && sub.nextBillingDate < now) {
+          const normalized = BillingCalculator.migrateLegacySubscription(sub);
+          const nextFutureDate = BillingCalculator.getNextFutureBillingDate(
+            normalized.nextBillingDate, 
+            normalized.cycleType, 
+            normalized.cycleValue
+          );
+          
+          if (nextFutureDate !== sub.nextBillingDate) {
+            await subscriptionRepository.save({ ...sub, nextBillingDate: nextFutureDate });
+            needsRefresh = true;
+          }
+        }
+      }
+
+      if (needsRefresh) {
+        allSubs = await subscriptionRepository.getAll();
+      }
       
       const activeSubs = allSubs.filter(s => !s.isArchived);
       const archivedSubs = allSubs.filter(s => s.isArchived);

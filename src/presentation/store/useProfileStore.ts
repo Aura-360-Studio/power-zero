@@ -10,6 +10,7 @@ interface ProfileState {
 
   fetchProfile: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
+  applyTheme: () => void;
   addNeutralizedAmount: (amount: number) => Promise<void>;
 }
 
@@ -19,24 +20,51 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
   error: null,
 
   fetchProfile: async () => {
-    set({ isLoading: true, error: null });
     try {
-      const profile = await userProfileRepository.getProfile() || defaultProfile;
-      set({ profile, isLoading: false });
+      const profile = await userProfileRepository.getProfile();
+      set({ profile: profile || defaultProfile });
+      get().applyTheme();
     } catch (err: any) {
-      set({ error: err.message || "Failed to fetch profile", isLoading: false });
+      console.error("Profile fetch error:", err);
     }
   },
 
   updateProfile: async (updates) => {
-    set({ isLoading: true, error: null });
     try {
       const current = get().profile;
       const newProfile = { ...current, ...updates };
       await userProfileRepository.saveProfile(newProfile);
-      set({ profile: newProfile, isLoading: false });
+      set({ profile: newProfile });
+      get().applyTheme();
     } catch (err: any) {
-      set({ error: err.message || "Failed to update profile", isLoading: false });
+      console.error("Profile update error:", err);
+    }
+  },
+
+  applyTheme: () => {
+    const { theme } = get().profile;
+    const root = window.document.documentElement;
+    
+    // Cleanup existing listeners if any
+    if ((window as any).themeQuery) {
+      (window as any).themeQuery.removeEventListener('change', get().applyTheme);
+    }
+
+    const setMode = (mode: 'dark' | 'light') => {
+      root.classList.remove('dark', 'light');
+      root.classList.add(mode);
+      root.style.colorScheme = mode;
+    };
+
+    if (theme === 'system') {
+      const query = window.matchMedia('(prefers-color-scheme: light)');
+      setMode(query.matches ? 'light' : 'dark');
+      
+      // Real-time listener for system changes
+      query.addEventListener('change', get().applyTheme);
+      (window as any).themeQuery = query;
+    } else {
+      setMode(theme);
     }
   },
 

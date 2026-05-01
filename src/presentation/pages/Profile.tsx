@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { useProfileStore } from '../store/useProfileStore';
 import { useSubscriptionStore } from '../store/useSubscriptionStore';
 import { formatCurrency } from '../../core/utils/Currency';
-import { ShieldCheck, Database, Zap, Settings2, Moon } from 'lucide-react';
-import { FormGroup } from '../components/molecules/FormGroup';
+import { ShieldCheck, Zap } from 'lucide-react';
 import { TextField } from '../components/atoms/TextField';
 import { PWAInstallCard } from '../components/atoms/PWAInstallCard';
 
@@ -30,14 +29,11 @@ export const Profile: React.FC = () => {
     updateProfile({ name: e.target.value });
   };
 
-  const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateProfile({ currency: e.target.value });
-  };
 
   return (
     <div className="animate-page-in">
       <header className="mb-10">
-        <h2 className="text-3xl font-bold tracking-tighter text-zinc-100 mb-2">Sentinel Profile</h2>
+        <h2 className="text-3xl font-bold tracking-tighter text-zinc-100 mb-2">Zhero Profile</h2>
         <p className="text-zinc-500 font-medium">Identity and Preferences.</p>
       </header>
 
@@ -82,59 +78,6 @@ export const Profile: React.FC = () => {
           </div>
         </section>
         
-        {/* Utility Preferences */}
-        <section>
-          <div className="flex items-center gap-2 mb-4 px-2">
-            <Settings2 size={16} className="text-zinc-500" />
-            <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Preferences</span>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 space-y-6">
-            <FormGroup label="Base Currency">
-              <select 
-                value={profile.currency}
-                onChange={handleCurrencyChange}
-                className="w-full bg-zinc-900 rounded-xl border border-white/10 focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
-              >
-                <option value="INR">INR (₹)</option>
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
-              </select>
-            </FormGroup>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="block font-bold text-zinc-100 mb-1">Theme Control</span>
-                <span className="text-sm text-zinc-500">Enforce kinetic dark mode.</span>
-              </div>
-              <button className="p-3 bg-accent/20 text-accent border border-accent/30 rounded-full cursor-not-allowed">
-                <Moon size={20} />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* System Info */}
-        <section>
-          <div className="flex items-center gap-2 mb-4 px-2">
-            <Database size={16} className="text-zinc-500" />
-            <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">System Info</span>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-              <span className="text-zinc-400 font-medium text-sm">Database Health</span>
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={16} className="text-accent" />
-                <span className="text-zinc-100 font-bold">{dbHealth} Records</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-zinc-400 font-medium text-sm">Version Tag</span>
-              <span className="text-zinc-100 font-mono text-sm bg-white/10 px-2 py-1 rounded-md">v1.0.0</span>
-            </div>
-          </div>
-        </section>
-
         {/* Sentinel Briefing */}
         <section className="pb-10">
           <div className="bg-zinc-900 border border-white/5 rounded-3xl p-6 relative overflow-hidden">
@@ -156,7 +99,7 @@ export const Profile: React.FC = () => {
                 <div>
                   <h4 className="text-zinc-100 font-bold mb-1 text-sm">The Philosophy</h4>
                   <p className="text-zinc-500 text-xs leading-relaxed">
-                    We don't use the word "Subscription" because Power Zero is built on the principle of active neutralization. Instead of passively spending, you are deploying Sentinels to ensure that every rupee spent is intentional and visible.
+                    We don't use the word "Subscription" because Zhero is built on the principle of active neutralization. Instead of passively spending, you are deploying Sentinels to ensure that every rupee spent is intentional and visible.
                   </p>
                 </div>
                 <div className="pt-2 border-t border-white/5">

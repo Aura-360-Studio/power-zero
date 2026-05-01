@@ -17,15 +17,17 @@ export const Pulse: React.FC = () => {
   const thirtyDaysFromNow = new Date();
   thirtyDaysFromNow.setDate(now.getDate() + 30);
 
-  // Filter alerts: nextBillingDate within 7 days
+  // Filter alerts: nextBillingDate within 7 days and status is ACTIVE
   const alerts = subscriptions.filter(sub => {
+    if (sub.status !== 'ACTIVE') return false;
     const nextDate = new Date(sub.nextBillingDate);
     return nextDate >= now && nextDate <= sevenDaysFromNow;
   });
 
-  // Filter planner: all upcoming in 30 days, sorted chronologically
+  // Filter planner: all upcoming in 30 days, sorted chronologically, and status is ACTIVE
   const planner = subscriptions
     .filter(sub => {
+      if (sub.status !== 'ACTIVE') return false;
       const nextDate = new Date(sub.nextBillingDate);
       return nextDate >= now && nextDate <= thirtyDaysFromNow;
     })

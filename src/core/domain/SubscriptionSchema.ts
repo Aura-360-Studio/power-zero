@@ -9,6 +9,13 @@ export const CategoryEnum = z.enum([
   'UTILITY'
 ]);
 
+export const CycleTypeEnum = z.enum([
+  'CALENDAR_MONTH',
+  'CALENDAR_YEAR',
+  'DAYS',
+  'WEEKS'
+]);
+
 export const CycleEnum = z.enum([
   'DAILY',
   'WEEKLY',
@@ -27,10 +34,13 @@ export const SubscriptionSchema = z.object({
   name: z.string().min(1, "Name is required"),
   amount: z.number().positive("Amount must be a positive number"),
   category: CategoryEnum,
-  cycle: CycleEnum,
-  nextBillingDate: z.string().datetime({ message: "Invalid ISO 8601 date string" }),
+  cycleType: CycleTypeEnum,
+  cycleValue: z.number().int().positive("Interval value must be a positive integer"),
+  startDate: z.string().datetime({ message: "Invalid ISO 8601 start date" }),
+  nextBillingDate: z.string().datetime({ message: "Invalid ISO 8601 next billing date" }),
   status: StatusEnum,
-  isArchived: z.boolean().default(false)
+  isArchived: z.boolean().default(false),
+  cycle: CycleEnum.optional()
 });
 
 export type ValidatedSubscription = z.infer<typeof SubscriptionSchema>;

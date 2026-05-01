@@ -1,11 +1,22 @@
-import React, { useRef } from 'react';
-import { Download, Upload, Trash2, Database, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Download, Upload, Trash2, Database, ShieldAlert, CheckCircle2, Check, Moon, Sun, Monitor } from 'lucide-react';
 import { useSubscriptionStore } from '../store/useSubscriptionStore';
 import { backupService } from '../../infrastructure/utils/BackupService';
+import { useProfileStore } from '../store/useProfileStore';
+import { useRouterStore } from '../store/useRouterStore';
+import { FormGroup } from '../components/molecules/FormGroup';
+import { TextField } from '../components/atoms/TextField';
+import { Settings2 } from 'lucide-react';
+import { SetBudgetDrawer } from '../components/organisms/SetBudgetDrawer';
+import { formatCurrency } from '../../core/utils/Currency';
 
 export const Settings: React.FC = () => {
-  const { wipeData, importData, isLoading, error } = useSubscriptionStore();
+  const { subscriptions, archivedSubscriptions, wipeData, importData, isLoading, error } = useSubscriptionStore();
+  const { profile, updateProfile } = useProfileStore();
+  const { navigate } = useRouterStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const [isBudgetDrawerOpen, setIsBudgetDrawerOpen] = useState(false);
 
   const handleExport = async () => {
     try {
@@ -125,6 +136,104 @@ export const Settings: React.FC = () => {
             </button>
           </div>
         </section>
+
+        {/* Global Budget Section */}
+        <section>
+          <div className="flex items-center gap-2 mb-4 px-2">
+            <Settings2 size={16} className="text-zinc-500" />
+            <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Preferences</span>
+          </div>
+
+          <div className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden divide-y divide-white/5">
+            {/* Budget */}
+            <button 
+              onClick={() => setIsBudgetDrawerOpen(true)}
+              className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors group text-left"
+            >
+              <div>
+                <span className="block text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Monthly Budget</span>
+                <span className="text-2xl font-black text-zinc-100 tracking-tighter">
+                  {formatCurrency(profile.monthlyBudget, profile.currency)}
+                </span>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-accent group-hover:text-background transition-all">
+                  <Settings2 size={20} />
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-accent transition-colors">Update</span>
+              </div>
+            </button>
+
+            {/* Currency */}
+            <div className="p-6">
+              <span className="block text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em] mb-3">Base Currency</span>
+              <select 
+                value={profile.currency}
+                onChange={(e) => updateProfile({ currency: e.target.value })}
+                className="w-full bg-zinc-900 rounded-xl border border-white/10 focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
+              >
+                <option value="INR">INR (₹)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+              </select>
+            </div>
+
+            {/* Theme Control */}
+            <button 
+              onClick={() => {
+                const themes: ('system' | 'dark' | 'light')[] = ['system', 'dark', 'light'];
+                const next = themes[(themes.indexOf(profile.theme) + 1) % themes.length];
+                updateProfile({ theme: next });
+              }}
+              className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors group text-left"
+            >
+              <div>
+                <span className="block font-bold text-zinc-100 mb-1">Appearance</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-accent">
+                    {profile.theme === 'system' ? 'System Sync' : `${profile.theme} Mode`}
+                  </span>
+                  {profile.theme === 'system' && (
+                    <span className="text-[9px] text-zinc-500 font-bold lowercase italic">
+                      (Follows device settings)
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-accent group-hover:text-background transition-all flex items-center justify-center">
+                {profile.theme === 'dark' ? <Moon size={18} /> : profile.theme === 'light' ? <Sun size={18} /> : <Monitor size={18} />}
+              </div>
+            </button>
+          </div>
+        </section>
+
+        {/* System Info */}
+        <section>
+          <div className="flex items-center gap-2 mb-4 px-2">
+            <Database size={16} className="text-zinc-500" />
+            <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">System Info</span>
+          </div>
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col gap-4">
+            <div className="flex justify-between items-center">
+              <span className="text-zinc-400 font-medium text-sm">Database Health</span>
+              <div className="flex items-center gap-2">
+                <ShieldAlert size={16} className="text-accent" />
+                <span className="text-zinc-100 font-bold">{subscriptions.length + archivedSubscriptions.length} Records</span>
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-zinc-400 font-medium text-sm">Version Tag</span>
+              <span className="text-zinc-100 font-mono text-sm bg-white/10 px-2 py-1 rounded-md">v1.0.0</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Budget Drawer */}
+        <SetBudgetDrawer 
+          isOpen={isBudgetDrawerOpen} 
+          onClose={() => setIsBudgetDrawerOpen(false)} 
+        />
 
         {/* Info Section */}
         <section className="pt-8">

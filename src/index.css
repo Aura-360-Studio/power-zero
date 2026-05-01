@@ -1,10 +1,43 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
+:root {
+  --background: #09090b;
+  --surface: #18181b;
+  --accent: #CCFF00;
+  --zinc-100: #f4f4f5;
+  --zinc-200: #e4e4e7;
+  --zinc-300: #d4d4d8;
+  --zinc-400: #a1a1aa;
+  --zinc-500: #71717a;
+  --zinc-600: #52525b;
+  --zinc-700: #3f3f46;
+  --zinc-800: #27272a;
+  --zinc-900: #18181b;
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+.light {
+  --background: #ffffff;
+  --surface: #f4f4f5;
+  --accent: #CCFF00;
+  --zinc-100: #09090b;
+  --zinc-200: #18181b;
+  --zinc-300: #27272a;
+  --zinc-400: #3f3f46;
+  --zinc-500: #52525b;
+  --zinc-600: #71717a;
+  --zinc-700: #a1a1aa;
+  --zinc-800: #d4d4d8;
+  --zinc-900: #e4e4e7;
+  --border: rgba(0, 0, 0, 0.1);
+}
+
 body {
-  background-color: theme('colors.background');
-  color: theme('colors.zinc.100');
+  background-color: var(--background);
+  color: var(--zinc-100);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @layer utilities {
@@ -32,9 +65,9 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(128, 128, 128, 0.1);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(128, 128, 128, 0.2);
 }

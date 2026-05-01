@@ -1,13 +1,16 @@
 import { db } from '../db/AppDatabase';
 import type { Subscription } from '../../core/domain/Subscription';
 import { SubscriptionSchema } from '../../core/domain/SubscriptionSchema';
+import { BillingCalculator } from '../../core/utils/BillingCalculator';
 
 export class SubscriptionRepository {
   /**
    * Retrieves all subscriptions from the IndexedDB store.
    */
   async getAll(): Promise<Subscription[]> {
-    return await db.subscriptions.toArray();
+    const rawSubs = await db.subscriptions.toArray();
+    // Ensure all data coming out of the DB is migrated to the latest schema
+    return rawSubs.map(sub => BillingCalculator.migrateLegacySubscription(sub));
   }
 
   /**
@@ -16,8 +19,11 @@ export class SubscriptionRepository {
    * Throws an error if validation fails (e.g., negative amount).
    */
   async save(sub: Omit<Subscription, 'id'> & { id?: string }): Promise<void> {
+    // Migration Layer: Ensure any legacy structures are normalized before validation
+    const migrated = BillingCalculator.migrateLegacySubscription(sub);
+    
     const subscriptionToSave = {
-      ...sub,
+      ...migrated,
       id: sub.id || crypto.randomUUID()
     };
 
