@@ -19,7 +19,7 @@ export const AddSubscriptionDrawer: React.FC<DrawerProps> = ({ isOpen, onClose }
   const [formData, setFormData] = useState({
     name: '',
     amount: '',
-    category: 'ENTERTAINMENT' as any,
+    category: 'UTILITIES' as any,
     cycleType: 'CALENDAR_MONTH' as any,
     cycleValue: '1',
     startDate: new Date().toISOString().split('T')[0]
@@ -73,7 +73,7 @@ export const AddSubscriptionDrawer: React.FC<DrawerProps> = ({ isOpen, onClose }
       setTimeout(() => {
         setSuccessToast(false);
         setFormData({
-          name: '', amount: '', category: 'ENTERTAINMENT', 
+          name: '', amount: '', category: 'UTILITIES', 
           cycleType: 'CALENDAR_MONTH', cycleValue: '1',
           startDate: new Date().toISOString().split('T')[0]
         });
@@ -133,12 +133,14 @@ export const AddSubscriptionDrawer: React.FC<DrawerProps> = ({ isOpen, onClose }
                 onChange={handleChange}
                 className="w-full bg-white/5 rounded-xl border border-white/10 focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
               >
+                <option value="UTILITIES">UTILITIES</option>
                 <option value="ENTERTAINMENT">ENTERTAINMENT</option>
-                <option value="MUSIC">MUSIC</option>
-                <option value="TOOLS">TOOLS</option>
-                <option value="LEARNING">LEARNING</option>
-                <option value="WELLNESS">WELLNESS</option>
-                <option value="UTILITY">UTILITY</option>
+                <option value="WORK">WORK</option>
+                <option value="HEALTH">HEALTH</option>
+                <option value="SHOPPING">SHOPPING</option>
+                <option value="TRAVEL">TRAVEL</option>
+                <option value="FINANCE">FINANCE</option>
+                <option value="CUSTOM">CUSTOM</option>
               </select>
             </FormGroup>
 

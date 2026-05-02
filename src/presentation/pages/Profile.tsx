@@ -5,17 +5,17 @@ import { formatCurrency } from '../../core/utils/Currency';
 import { ShieldCheck, Zap } from 'lucide-react';
 import { TextField } from '../components/atoms/TextField';
 import { PWAInstallCard } from '../components/atoms/PWAInstallCard';
+import { getInitials } from '../../core/utils/Identity';
 
 export const Profile: React.FC = () => {
   const { profile, fetchProfile, updateProfile } = useProfileStore();
-  const { subscriptions, archivedSubscriptions } = useSubscriptionStore();
+  const { archivedSubscriptions } = useSubscriptionStore();
 
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
 
-  const initials = profile.name.substring(0, 2).toUpperCase();
-  const dbHealth = subscriptions.length + archivedSubscriptions.length;
+  const initials = getInitials(profile.name);
 
   // Sync "Total Neutralized" with the sum of archived targets for consistency
   const totalNeutralized = archivedSubscriptions.reduce((acc, sub) => {

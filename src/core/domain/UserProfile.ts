@@ -6,6 +6,7 @@ export interface UserProfile {
   avatarColor: string;
   totalNeutralized: number;
   monthlyBudget: number;
+  notificationsEnabled: boolean;
 }
 
 export const defaultProfile: UserProfile = {
@@ -15,5 +16,6 @@ export const defaultProfile: UserProfile = {
   theme: 'system',
   avatarColor: '#CCFF00',
   totalNeutralized: 0,
-  monthlyBudget: 0
+  monthlyBudget: 0,
+  notificationsEnabled: false
 };

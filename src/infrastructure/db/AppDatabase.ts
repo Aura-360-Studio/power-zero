@@ -10,7 +10,7 @@ export class AppDatabase extends Dexie {
     super('PowerZeroDB');
     
     // Schema definition
-    this.version(3).stores({
+    this.version(4).stores({
       subscriptions: 'id, name, category, nextBillingDate, isArchived',
       userProfile: '++id, name, currency, totalNeutralized'
     });

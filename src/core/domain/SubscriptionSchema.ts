@@ -1,12 +1,14 @@
 import { z } from 'zod';
 
 export const CategoryEnum = z.enum([
+  'UTILITIES',
   'ENTERTAINMENT',
-  'MUSIC',
-  'TOOLS',
-  'LEARNING',
-  'WELLNESS',
-  'UTILITY'
+  'WORK',
+  'HEALTH',
+  'SHOPPING',
+  'TRAVEL',
+  'FINANCE',
+  'CUSTOM'
 ]);
 
 export const CycleTypeEnum = z.enum([
@@ -40,6 +42,7 @@ export const SubscriptionSchema = z.object({
   nextBillingDate: z.string().datetime({ message: "Invalid ISO 8601 next billing date" }),
   status: StatusEnum,
   isArchived: z.boolean().default(false),
+  cancelledAt: z.string().datetime({ message: "Invalid ISO 8601 cancellation date" }).optional(),
   cycle: CycleEnum.optional()
 });
 

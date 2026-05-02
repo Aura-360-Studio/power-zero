@@ -148,5 +148,47 @@ export const BillingCalculator = {
       startDate: sub.nextBillingDate || new Date().toISOString(),
       nextBillingDate: sub.nextBillingDate || new Date().toISOString()
     };
+  },
+
+  /**
+   * Sentinel Notification Logic
+   * Calculates specific alert windows: 3 days and 24 hours before billing.
+   */
+  getNotificationThresholds: (nextBillingDate: string): { type: '3day' | '24hr', timestamp: number }[] => {
+    const next = new Date(nextBillingDate).getTime();
+    return [
+      { type: '3day', timestamp: next - (3 * 24 * 60 * 60 * 1000) },
+      { type: '24hr', timestamp: next - (1 * 24 * 60 * 60 * 1000) }
+    ];
+  },
+
+  /**
+   * Determines if a subscription should trigger a notification.
+   */
+  getPendingNotification: (sub: Subscription): { type: '3day' | '24hr', amount: number } | null => {
+    if (sub.status !== 'ACTIVE' || sub.isArchived) return null;
+
+    const now = Date.now();
+    const thresholds = BillingCalculator.getNotificationThresholds(sub.nextBillingDate);
+    
+    // Sort by most recent window first
+    const activeThresholds = thresholds
+      .filter(t => now >= t.timestamp && now < new Date(sub.nextBillingDate).getTime())
+      .reverse();
+
+    if (activeThresholds.length === 0) return null;
+
+    const latestThreshold = activeThresholds[0];
+    
+    // Check if we already notified for this specific threshold window
+    // We store the lastNotifiedAt as a string ISO, but we need to compare if it's the same billing cycle
+    const lastNotified = sub.lastNotifiedAt ? new Date(sub.lastNotifiedAt).getTime() : 0;
+    
+    // Only notify if the last notification was BEFORE the current threshold started
+    if (lastNotified < latestThreshold.timestamp) {
+      return { type: latestThreshold.type, amount: sub.amount };
+    }
+
+    return null;
   }
 };

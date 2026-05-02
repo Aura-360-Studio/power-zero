@@ -154,12 +154,14 @@ export const EditSubscriptionDrawer: React.FC<DrawerProps> = ({ isOpen, onClose,
                 onChange={handleChange}
                 className="w-full bg-white/5 rounded-xl border border-white/10 focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
               >
+                <option value="UTILITIES">UTILITIES</option>
                 <option value="ENTERTAINMENT">ENTERTAINMENT</option>
-                <option value="MUSIC">MUSIC</option>
-                <option value="TOOLS">TOOLS</option>
-                <option value="LEARNING">LEARNING</option>
-                <option value="WELLNESS">WELLNESS</option>
-                <option value="UTILITY">UTILITY</option>
+                <option value="WORK">WORK</option>
+                <option value="HEALTH">HEALTH</option>
+                <option value="SHOPPING">SHOPPING</option>
+                <option value="TRAVEL">TRAVEL</option>
+                <option value="FINANCE">FINANCE</option>
+                <option value="CUSTOM">CUSTOM</option>
               </select>
             </FormGroup>
 

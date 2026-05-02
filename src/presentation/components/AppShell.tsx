@@ -3,6 +3,7 @@ import { LayoutGrid, History, Plus, Settings, Activity } from 'lucide-react';
 import { AddSubscriptionDrawer } from './organisms/AddSubscriptionDrawer';
 import { useRouterStore } from '../store/useRouterStore';
 import { useProfileStore } from '../store/useProfileStore';
+import { getInitials } from '../../core/utils/Identity';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -61,7 +62,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     };
   }, [history, lastBackPress, goBack]);
 
-  const initials = profile?.name ? profile.name.substring(0, 2).toUpperCase() : 'ST';
+  const initials = getInitials(profile?.name || 'User Sentinel');
 
   const NavButton = ({ view, icon: Icon }: { view: any, icon: any }) => (
     <button 
@@ -88,13 +89,13 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           
           <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-xl px-6 py-6 flex justify-between items-center">
             <button onClick={handleLogoClick} className="flex items-center gap-3 hover:opacity-80 active:scale-95 transition-all">
-              <div className="p-1 bg-accent/10 rounded-lg">
+              <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
                 <img src="/favicon.svg" alt="Logo" className="w-6 h-6" />
               </div>
-              <h1 className="text-lg font-black tracking-tighter text-zinc-100 uppercase italic">Power Zero</h1>
+              <h1 className="text-xl font-black tracking-tighter text-zinc-100 uppercase italic">Zhero</h1>
             </button>
-            <div className="flex -space-x-2">
-              <button onClick={() => navigate('profile')} className="w-8 h-8 rounded-full border-2 border-background bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-accent tracking-tighter hover:scale-105 transition-transform">
+            <div className="flex">
+              <button onClick={() => navigate('profile')} className="w-10 h-10 rounded-full border-2 border-background bg-zinc-800 flex items-center justify-center text-xs font-black text-accent tracking-tighter hover:scale-105 transition-transform shadow-[0_0_20px_rgba(204,255,0,0.1)]">
                 {initials}
               </button>
             </div>

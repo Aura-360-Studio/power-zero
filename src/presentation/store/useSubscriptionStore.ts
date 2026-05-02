@@ -95,7 +95,12 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       // Logic requirement: Implement soft delete instead of hard wipe natively.
-      await subscriptionRepository.updateStatus(id, 'CANCELLED');
+      const existing = get().subscriptions.find(s => s.id === id) || get().archivedSubscriptions.find(s => s.id === id);
+      if (existing) {
+        await subscriptionRepository.save({ ...existing, status: 'CANCELLED', cancelledAt: new Date().toISOString() });
+      } else {
+        await subscriptionRepository.updateStatus(id, 'CANCELLED');
+      }
       
       // Triggers CalculateBurnRate avoiding state redundancy issues 
       await get().fetchSubscriptions();
@@ -131,7 +136,16 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
           await useProfileStore.getState().addNeutralizedAmount(burn.monthly);
         }
       }
-      await subscriptionRepository.updateArchiveStatus(id, isArchived);
+      const existing = get().subscriptions.find(s => s.id === id) || get().archivedSubscriptions.find(s => s.id === id);
+      if (existing) {
+        await subscriptionRepository.save({ 
+          ...existing, 
+          isArchived, 
+          cancelledAt: isArchived ? new Date().toISOString() : existing.cancelledAt 
+        });
+      } else {
+        await subscriptionRepository.updateArchiveStatus(id, isArchived);
+      }
       await get().fetchSubscriptions();
     } catch (err: any) {
       set({ error: err.message || "Failed to archive subscription", isLoading: false });

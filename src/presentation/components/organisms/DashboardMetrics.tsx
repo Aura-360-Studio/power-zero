@@ -1,15 +1,21 @@
 import React from 'react';
 import { useSubscriptionStore } from '../../store/useSubscriptionStore';
-import { TrendingUp } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 import { useProfileStore } from '../../store/useProfileStore';
 import { useRouterStore } from '../../store/useRouterStore';
 import { formatCurrency } from '../../../core/utils/Currency';
+import { getWeeklyFlow } from '../../../core/utils/WeeklyFlow';
 
 export const DashboardMetrics: React.FC = () => {
-  const { burnRate } = useSubscriptionStore();
+  const { burnRate, subscriptions, archivedSubscriptions } = useSubscriptionStore();
   const { profile } = useProfileStore();
   const { navigate } = useRouterStore();
   const [viewMode, setViewMode] = React.useState<'monthly' | 'yearly'>('monthly');
+  const [selectedDayIndex, setSelectedDayIndex] = React.useState(6);
+  
+  const weeklyFlow = React.useMemo(() => getWeeklyFlow(subscriptions, archivedSubscriptions), [subscriptions, archivedSubscriptions]);
+  const maxDaily = Math.max(...weeklyFlow.map(d => d.totalDaily), 1); // Avoid div by zero
+  const selectedDay = weeklyFlow[selectedDayIndex];
   
   const isMonthly = viewMode === 'monthly';
   
@@ -33,20 +39,11 @@ export const DashboardMetrics: React.FC = () => {
   const isBreached = budget > 0 && overflowAmount > 0;
   const isWarning = budget > 0 && rawPercentage > 80;
 
-  const getStatusColor = () => {
-    if (isBreached) return 'text-red-500';
-    if (isWarning) return 'text-orange-400';
-    return 'text-accent';
-  };
-
   const getStatusBg = () => {
     if (isBreached) return 'bg-red-500';
     if (isWarning) return 'bg-orange-400';
     return 'bg-accent';
   };
-
-  // Daily Logic (Bar Chart Style)
-  const bars = [0.4, 0.6, 0.5, 0.8, 0.7, 0.9, 1.0]; // scale factors
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -142,6 +139,14 @@ export const DashboardMetrics: React.FC = () => {
               </span>
               <span className="text-zinc-500"> {isMonthly ? 'Budget Used' : 'Annual Impact'})</span>
             </div>
+
+            <div className="mt-2 text-[9px] font-black uppercase tracking-[0.2em] text-zinc-600 flex items-center gap-2">
+              <div className="w-1 h-1 rounded-full bg-zinc-800" />
+              <span>
+                {isMonthly ? 'Annual Forecast: ' : 'Monthly Mean: '}
+                <span className="text-zinc-400">{formatCurrency(isMonthly ? burnRate.yearly : burnRate.monthly, profile.currency)}</span>
+              </span>
+            </div>
           </div>
         )}
         {budget <= 0 && (
@@ -154,33 +159,78 @@ export const DashboardMetrics: React.FC = () => {
         )}
       </div>
 
-      {/* Daily Leak - Bar Chart Style */}
+      {/* Dynamic Daily Cost Flow - Timeline Chart */}
       <div className="md:col-span-2 bg-white/5 border border-white/10 rounded-[2rem] p-6 flex flex-col justify-between">
         <div>
           <div className="flex justify-between items-start mb-6">
             <div>
-              <span className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em]">Daily Leak</span>
-              <h3 className="text-zinc-100 text-xs font-bold mt-1 tracking-tight">Volatility: Low</h3>
+              <span className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em]">
+                {selectedDayIndex === 6 ? "Today's Cost Flow" : `${selectedDay.dayName}'s Cost Flow`}
+              </span>
+              <h3 className="text-zinc-100 text-xs font-bold mt-1 tracking-tight">Active Burn Map</h3>
             </div>
-            <TrendingUp size={18} className="text-accent" />
+            <CalendarDays size={18} className="text-zinc-500" />
           </div>
 
-          <div className="flex items-end gap-1.5 h-16 mb-6">
-            {bars.map((scale, i) => (
-              <div 
-                key={i} 
-                className={`flex-1 rounded-full transition-all duration-1000 ${i === bars.length - 1 ? 'bg-accent shadow-[0_0_10px_rgba(204,255,0,0.4)]' : 'bg-white/10'}`}
-                style={{ height: `${scale * 100}%` }}
-              />
-            ))}
+          <div className="flex items-end gap-1.5 h-16 mb-4">
+            {weeklyFlow.map((day, i) => {
+              const isSelected = i === selectedDayIndex;
+              const heightPct = (day.totalDaily / maxDaily) * 100;
+              return (
+                <button 
+                  key={i} 
+                  onClick={() => setSelectedDayIndex(i)}
+                  className={`flex-1 rounded-full transition-all duration-300 relative group flex items-end justify-center ${isSelected ? 'bg-accent shadow-[0_0_15px_rgba(204,255,0,0.5)]' : 'bg-white/10 hover:bg-white/20'}`}
+                  style={{ height: `${Math.max(heightPct, 5)}%` }} // Minimum 5% height so it's clickable even if 0
+                >
+                  {/* Tooltip on hover for non-selected days */}
+                  {!isSelected && (
+                    <div className="absolute -top-6 bg-zinc-800 text-[8px] font-bold px-2 py-1 rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      {day.dayName}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          
+          {/* Day Labels */}
+          <div className="flex justify-between px-2 mb-6 border-b border-white/5 pb-6">
+             {weeklyFlow.map((day, i) => (
+                <span key={i} className={`text-[8px] font-black uppercase transition-colors ${i === selectedDayIndex ? 'text-accent' : 'text-zinc-600'}`}>
+                  {day.dayName.charAt(0)}
+                </span>
+             ))}
           </div>
         </div>
 
-        <div className="flex justify-between items-end">
-          <div>
-            <span className="text-2xl font-black text-zinc-100 tracking-tighter">₹{burnRate.daily.toFixed(2)}</span>
-            <div className="text-accent text-[10px] font-bold mt-1">+2.4% vs Yesterday</div>
+        {/* Breakdown Panel */}
+        <div className="animate-in fade-in duration-300">
+          <div className="flex justify-between items-end mb-4">
+            <div>
+              <span className="text-2xl font-black text-zinc-100 tracking-tighter">{formatCurrency(selectedDay.totalDaily, profile.currency)}</span>
+              <div className="text-accent text-[10px] font-bold mt-1 tracking-widest uppercase">/ Day</div>
+            </div>
+            <div className="text-right">
+               <span className="text-zinc-500 text-[10px] font-bold tracking-tight">{selectedDay.activeItems.length} Active Modules</span>
+            </div>
           </div>
+          
+          {/* List Breakdown */}
+          {selectedDay.activeItems.length > 0 ? (
+            <div className="space-y-2 max-h-[120px] overflow-y-auto custom-scrollbar pr-2">
+              {selectedDay.activeItems.map((item, idx) => (
+                <div key={idx} className="flex justify-between items-center bg-black/20 p-2.5 rounded-xl border border-white/5">
+                  <span className="text-xs font-bold text-zinc-300">{item.name}</span>
+                  <span className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">{formatCurrency(item.dailyCost, profile.currency)}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+             <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-center text-xs font-bold text-zinc-600">
+               No active drains detected on this day.
+             </div>
+          )}
         </div>
       </div>
 

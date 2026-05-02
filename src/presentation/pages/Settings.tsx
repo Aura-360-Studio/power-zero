@@ -1,11 +1,9 @@
 import React, { useRef, useState } from 'react';
-import { Download, Upload, Trash2, Database, ShieldAlert, CheckCircle2, Check, Moon, Sun, Monitor } from 'lucide-react';
+import { Download, Upload, Trash2, Database, ShieldAlert, CheckCircle2, Moon, Sun, Monitor, Bell } from 'lucide-react';
 import { useSubscriptionStore } from '../store/useSubscriptionStore';
 import { backupService } from '../../infrastructure/utils/BackupService';
 import { useProfileStore } from '../store/useProfileStore';
 import { useRouterStore } from '../store/useRouterStore';
-import { FormGroup } from '../components/molecules/FormGroup';
-import { TextField } from '../components/atoms/TextField';
 import { Settings2 } from 'lucide-react';
 import { SetBudgetDrawer } from '../components/organisms/SetBudgetDrawer';
 import { formatCurrency } from '../../core/utils/Currency';
@@ -13,7 +11,7 @@ import { formatCurrency } from '../../core/utils/Currency';
 export const Settings: React.FC = () => {
   const { subscriptions, archivedSubscriptions, wipeData, importData, isLoading, error } = useSubscriptionStore();
   const { profile, updateProfile } = useProfileStore();
-  const { navigate } = useRouterStore();
+  const { } = useRouterStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [isBudgetDrawerOpen, setIsBudgetDrawerOpen] = useState(false);
@@ -25,7 +23,7 @@ export const Settings: React.FC = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `power-zero-export-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `zhero-export-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
@@ -61,6 +59,19 @@ export const Settings: React.FC = () => {
     }
   };
 
+  const handleToggleNotifications = async () => {
+    if (!profile.notificationsEnabled) {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        updateProfile({ notificationsEnabled: true });
+      } else {
+        alert("Permission denied. Enable notifications in your browser settings to activate Sentinel Alerts.");
+      }
+    } else {
+      updateProfile({ notificationsEnabled: false });
+    }
+  };
+
   return (
     <div className="animate-in fade-in duration-500">
       <header className="mb-10">
@@ -92,7 +103,7 @@ export const Settings: React.FC = () => {
             >
               <div>
                 <span className="block font-bold text-zinc-100 mb-1">Export Database</span>
-                <span className="text-sm text-zinc-500">Download all records as a portable JSON file.</span>
+                <span className="text-sm text-zinc-500">Download all Sentinels, Preferences, and Alert configs as a portable JSON file.</span>
               </div>
               <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-accent group-hover:text-background transition-all">
                 <Download size={20} />
@@ -205,6 +216,29 @@ export const Settings: React.FC = () => {
                 {profile.theme === 'dark' ? <Moon size={18} /> : profile.theme === 'light' ? <Sun size={18} /> : <Monitor size={18} />}
               </div>
             </button>
+
+            {/* Notifications */}
+            <button 
+              onClick={handleToggleNotifications}
+              className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors group text-left"
+            >
+              <div>
+                <span className="block font-bold text-zinc-100 mb-1">Sentinel Alerts</span>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${profile.notificationsEnabled ? 'text-accent' : 'text-zinc-500'}`}>
+                    {profile.notificationsEnabled ? 'Active' : 'Disabled'}
+                  </span>
+                  {profile.notificationsEnabled && (
+                    <span className="text-[9px] text-zinc-500 font-bold lowercase italic">
+                      (3 days and 24h prior)
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className={`p-3 rounded-2xl transition-all ${profile.notificationsEnabled ? 'bg-accent text-background' : 'bg-white/5 text-zinc-500 group-hover:bg-white/10'}`}>
+                <Bell size={18} />
+              </div>
+            </button>
           </div>
         </section>
 
@@ -224,7 +258,7 @@ export const Settings: React.FC = () => {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-zinc-400 font-medium text-sm">Version Tag</span>
-              <span className="text-zinc-100 font-mono text-sm bg-white/10 px-2 py-1 rounded-md">v1.0.0</span>
+              <span className="text-zinc-100 font-mono text-sm bg-white/10 px-2 py-1 rounded-md">v1.2.0</span>
             </div>
           </div>
         </section>
@@ -243,7 +277,7 @@ export const Settings: React.FC = () => {
               <span className="font-bold text-zinc-100">Privacy Verified</span>
             </div>
             <p className="text-sm text-zinc-500 leading-relaxed">
-              Power Zero is a <strong>local-first</strong> application. Your data never leaves this device unless you explicitly export it. We do not use trackers, cloud sync, or external analytics.
+              Zhero is a <strong>local-first</strong> application. Your data never leaves this device unless you explicitly export it. We do not use trackers, cloud sync, or external analytics.
             </p>
           </div>
         </section>
