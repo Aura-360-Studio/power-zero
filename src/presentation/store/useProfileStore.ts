@@ -22,7 +22,7 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
   fetchProfile: async () => {
     try {
       const profile = await userProfileRepository.getProfile();
-      set({ profile: profile || defaultProfile });
+      set({ profile: { ...defaultProfile, ...profile } });
       get().applyTheme();
     } catch (err: any) {
       console.error("Profile fetch error:", err);

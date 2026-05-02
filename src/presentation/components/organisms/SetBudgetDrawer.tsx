@@ -12,7 +12,7 @@ interface DrawerProps {
 
 export const SetBudgetDrawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
   const { profile, updateProfile } = useProfileStore();
-  const [localBudget, setLocalBudget] = useState(profile.monthlyBudget.toString());
+  const [localBudget, setLocalBudget] = useState((profile.monthlyBudget || 0).toString());
   const [successToast, setSuccessToast] = useState(false);
 
   useEffect(() => {

@@ -3,7 +3,6 @@ import { Download, Upload, Trash2, Database, ShieldAlert, CheckCircle2, Moon, Su
 import { useSubscriptionStore } from '../store/useSubscriptionStore';
 import { backupService } from '../../infrastructure/utils/BackupService';
 import { useProfileStore } from '../store/useProfileStore';
-import { useRouterStore } from '../store/useRouterStore';
 import { Settings2 } from 'lucide-react';
 import { SetBudgetDrawer } from '../components/organisms/SetBudgetDrawer';
 import { formatCurrency } from '../../core/utils/Currency';
@@ -11,7 +10,6 @@ import { formatCurrency } from '../../core/utils/Currency';
 export const Settings: React.FC = () => {
   const { subscriptions, archivedSubscriptions, wipeData, importData, isLoading, error } = useSubscriptionStore();
   const { profile, updateProfile } = useProfileStore();
-  const { } = useRouterStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [isBudgetDrawerOpen, setIsBudgetDrawerOpen] = useState(false);
