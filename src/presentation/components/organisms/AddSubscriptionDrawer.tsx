@@ -106,14 +106,14 @@ export const AddSubscriptionDrawer: React.FC<DrawerProps> = ({ isOpen, onClose }
          </div>
       )}
 
-      <div className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-zinc-900 rounded-t-[2.5rem] shadow-2xl z-[70] transition-transform duration-500 ease-out px-8 py-10 border-t border-white/10 ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}>
+      <div className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-zinc-900 rounded-t-[2.5rem] shadow-2xl z-[70] transition-transform duration-500 ease-out px-8 py-10 border-t border border-border ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}>
         
         <div className="flex justify-between items-center mb-10">
           <div>
             <h2 className="text-2xl font-bold tracking-tighter text-zinc-100">Add Sentinel</h2>
             <p className="text-zinc-500 text-sm">Deploy a new financial monitor.</p>
           </div>
-          <button onClick={onClose} className="p-2 bg-white/5 rounded-full text-zinc-400 hover:text-zinc-100 transition-colors"><X size={24} strokeWidth={1.5} /></button>
+          <button onClick={onClose} className="p-2 bg-surface shadow-[var(--card-shadow)] border border-border rounded-full text-zinc-400 hover:text-zinc-100 transition-colors"><X size={24} strokeWidth={1.5} /></button>
         </div>
 
         <div className="flex flex-col gap-8 mb-10 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
@@ -131,7 +131,7 @@ export const AddSubscriptionDrawer: React.FC<DrawerProps> = ({ isOpen, onClose }
                 name="category" 
                 value={formData.category} 
                 onChange={handleChange}
-                className="w-full bg-white/5 rounded-xl border border-white/10 focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
+                className="w-full bg-surface shadow-[var(--card-shadow)] border border-border rounded-xl border border-border focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
               >
                 <option value="UTILITIES">UTILITIES</option>
                 <option value="ENTERTAINMENT">ENTERTAINMENT</option>
@@ -170,7 +170,7 @@ export const AddSubscriptionDrawer: React.FC<DrawerProps> = ({ isOpen, onClose }
                     setFormData(prev => ({ ...prev, cycleType: 'CALENDAR_MONTH', cycleValue: '3' }));
                   }
                 }}
-                className="w-full bg-white/5 rounded-xl border border-white/10 focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
+                className="w-full bg-surface shadow-[var(--card-shadow)] border border-border rounded-xl border border-border focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
               >
                 <option value="MONTHLY">Monthly</option>
                 <option value="YEARLY">Yearly</option>

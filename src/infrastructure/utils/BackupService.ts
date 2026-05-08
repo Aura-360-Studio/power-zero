@@ -27,27 +27,54 @@ export class BackupService {
   }
 
   /**
-   * Parses the JSON and ingests it into their respective tables.
+   * Parses the JSON, migrates any legacy structures, validates against schema, and ingests it.
    */
   async importData(json: string): Promise<void> {
     try {
       const data = JSON.parse(json);
       
+      let importedSubs: any[] = [];
+      let importedProfile: UserProfile | null = null;
+
       // Determine if it's the old format (just an array of subscriptions) or the new format
       if (Array.isArray(data)) {
-        await subscriptionRepository.bulkImport(data as Subscription[]);
-        // Profile remains untouched
+        importedSubs = data;
       } else if (data.subscriptions && data.profile) {
         const backup = data as BackupData;
+        importedSubs = backup.subscriptions;
+        importedProfile = backup.profile;
+      } else {
+        throw new Error("Invalid backup format: The file does not contain recognized Zhero data.");
+      }
+
+      // Run migration and strict Zod validation on every subscription before touching DB
+      const validatedSubs: Subscription[] = [];
+      const { BillingCalculator } = await import('../../core/utils/BillingCalculator');
+      const { SubscriptionSchema } = await import('../../core/domain/SubscriptionSchema');
+
+      for (const sub of importedSubs) {
+        const migrated = BillingCalculator.migrateLegacySubscription(sub);
         
+        // This will throw a ZodError if fundamentally invalid (e.g. missing required fields other than category)
+        const validated = SubscriptionSchema.parse(migrated);
+        validatedSubs.push(validated as Subscription);
+      }
+
+      // Safe to insert into the database
+      if (importedProfile) {
         await db.transaction('rw', db.subscriptions, db.userProfile, async () => {
-          await db.subscriptions.bulkPut(backup.subscriptions);
-          await db.userProfile.put(backup.profile);
+          await db.subscriptions.bulkPut(validatedSubs);
+          await db.userProfile.put(importedProfile!);
         });
       } else {
-        throw new Error("Invalid backup format");
+        await subscriptionRepository.bulkImport(validatedSubs);
       }
+      
     } catch (e: any) {
+      if (e.name === 'ZodError') {
+        const issues = e.errors.map((err: any) => `${err.path.join('.')}: ${err.message}`).join(' | ');
+        throw new Error(`Data validation failed: ${issues}`);
+      }
       throw new Error(`Import failed: ${e.message}`);
     }
   }

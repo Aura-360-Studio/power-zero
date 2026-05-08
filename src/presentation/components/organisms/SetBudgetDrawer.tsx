@@ -48,14 +48,14 @@ export const SetBudgetDrawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
          </div>
       )}
 
-      <div className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-zinc-900 rounded-t-[2.5rem] shadow-2xl z-[70] transition-transform duration-500 ease-out px-8 py-10 border-t border-white/10 ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}>
+      <div className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-zinc-900 rounded-t-[2.5rem] shadow-2xl z-[70] transition-transform duration-500 ease-out px-8 py-10 border-t border border-border ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}>
         
         <div className="flex justify-between items-center mb-10">
           <div>
             <h2 className="text-2xl font-bold tracking-tighter text-zinc-100">Set Monthly Budget</h2>
             <p className="text-zinc-500 text-sm">Define your financial ceiling.</p>
           </div>
-          <button onClick={onClose} className="p-2 bg-white/5 rounded-full text-zinc-400 hover:text-zinc-100 transition-colors"><X size={24} strokeWidth={1.5} /></button>
+          <button onClick={onClose} className="p-2 bg-surface shadow-[var(--card-shadow)] border border-border rounded-full text-zinc-400 hover:text-zinc-100 transition-colors"><X size={24} strokeWidth={1.5} /></button>
         </div>
 
         <div className="flex flex-col gap-8 mb-10 pr-2">
@@ -76,7 +76,7 @@ export const SetBudgetDrawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
         <div className="flex gap-4">
           <button 
             onClick={onClose}
-            className="flex-1 bg-white/5 text-zinc-100 font-bold tracking-widest uppercase text-xs py-5 rounded-2xl hover:bg-white/10 active:scale-[0.98] transition-all"
+            className="flex-1 bg-surface shadow-[var(--card-shadow)] border border-border text-zinc-100 font-bold tracking-widest uppercase text-xs py-5 rounded-2xl hover:bg-zinc-500/10 active:scale-[0.98] transition-all"
           >
             Cancel
           </button>

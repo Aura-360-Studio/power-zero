@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { useSubscriptionStore } from './presentation/store/useSubscriptionStore';
 import { useProfileStore } from './presentation/store/useProfileStore';
 import { BillingCalculator } from './core/utils/BillingCalculator';
+import { DesktopWrapper } from './presentation/components/organisms/DesktopWrapper';
 
 function App() {
   const { currentView } = useRouterStore();
@@ -59,19 +60,19 @@ function App() {
   }, [profile.notificationsEnabled, subscriptions, updateSubscription]);
 
   return (
-    <>
-      <SplashScreen />
-      <AppShell>
-        <div key={currentView} className="animate-page-in">
-          {currentView === 'dashboard' && <Dashboard />}
-          {currentView === 'archive' && <Archives />}
-          {currentView === 'settings' && <Settings />}
-          {currentView === 'details' && <SentinelDetails />}
-          {currentView === 'profile' && <Profile />}
-          {currentView === 'pulse' && <Pulse />}
-        </div>
-      </AppShell>
-    </>
+      <DesktopWrapper>
+        <SplashScreen />
+        <AppShell>
+          <div key={currentView} className="animate-page-in">
+            {currentView === 'dashboard' && <Dashboard />}
+            {currentView === 'archive' && <Archives />}
+            {currentView === 'settings' && <Settings />}
+            {currentView === 'details' && <SentinelDetails />}
+            {currentView === 'profile' && <Profile />}
+            {currentView === 'pulse' && <Pulse />}
+          </div>
+        </AppShell>
+      </DesktopWrapper>
   );
 }
 

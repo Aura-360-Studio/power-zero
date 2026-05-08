@@ -32,7 +32,7 @@ export const SplashScreen: React.FC = () => {
         <div className="absolute inset-0 bg-accent/20 blur-3xl rounded-full animate-pulse scale-150" />
         
         {/* Logo Container */}
-        <div className="relative w-24 h-24 bg-zinc-900 border-2 border-white/5 rounded-3xl flex items-center justify-center shadow-[0_0_50px_rgba(204,255,0,0.1)] animate-bounce-subtle">
+        <div className="relative w-24 h-24 bg-zinc-900 border-2 border border-border rounded-3xl flex items-center justify-center shadow-[0_0_50px_rgba(204,255,0,0.1)] animate-bounce-subtle">
           <img src="/favicon.svg" alt="Power Zero Logo" className="w-12 h-12" />
         </div>
       </div>
@@ -46,7 +46,7 @@ export const SplashScreen: React.FC = () => {
       </div>
 
       {/* Loading Progress Line */}
-      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-32 h-[2px] bg-white/5 overflow-hidden rounded-full">
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-32 h-[2px] bg-surface shadow-[var(--card-shadow)] border border-border overflow-hidden rounded-full">
         <div className="h-full bg-accent animate-loading-bar" />
       </div>
 

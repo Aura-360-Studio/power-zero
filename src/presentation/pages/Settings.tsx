@@ -93,17 +93,17 @@ export const Settings: React.FC = () => {
             <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Local-First Storage</span>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl divide-y divide-white/5 overflow-hidden">
+          <div className="bg-surface shadow-[var(--card-shadow)] border border-border rounded-3xl divide-y divide-white/5 overflow-hidden">
             {/* Export */}
             <button 
               onClick={handleExport}
-              className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors group text-left"
+              className="w-full flex items-center justify-between p-6 hover:bg-surface shadow-[var(--card-shadow)] border border-border transition-colors group text-left"
             >
               <div>
                 <span className="block font-bold text-zinc-100 mb-1">Export Database</span>
                 <span className="text-sm text-zinc-500">Download all Sentinels, Preferences, and Alert configs as a portable JSON file.</span>
               </div>
-              <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-accent group-hover:text-background transition-all">
+              <div className="p-3 bg-surface shadow-[var(--card-shadow)] border border-border rounded-2xl group-hover:bg-accent group-hover:text-background transition-all">
                 <Download size={20} />
               </div>
             </button>
@@ -112,13 +112,13 @@ export const Settings: React.FC = () => {
             <button 
               onClick={handleImportClick}
               disabled={isLoading}
-              className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors group text-left"
+              className="w-full flex items-center justify-between p-6 hover:bg-surface shadow-[var(--card-shadow)] border border-border transition-colors group text-left"
             >
               <div>
                 <span className="block font-bold text-zinc-100 mb-1">Import Backup</span>
                 <span className="text-sm text-zinc-500">Ingest records from a previously exported file.</span>
               </div>
-              <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-accent group-hover:text-background transition-all">
+              <div className="p-3 bg-surface shadow-[var(--card-shadow)] border border-border rounded-2xl group-hover:bg-accent group-hover:text-background transition-all">
                 <Upload size={20} />
               </div>
             </button>
@@ -153,11 +153,11 @@ export const Settings: React.FC = () => {
             <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Preferences</span>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden divide-y divide-white/5">
+          <div className="bg-surface shadow-[var(--card-shadow)] border border-border rounded-3xl overflow-hidden divide-y divide-white/5">
             {/* Budget */}
             <button 
               onClick={() => setIsBudgetDrawerOpen(true)}
-              className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors group text-left"
+              className="w-full flex items-center justify-between p-6 hover:bg-surface shadow-[var(--card-shadow)] border border-border transition-colors group text-left"
             >
               <div>
                 <span className="block text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Monthly Budget</span>
@@ -166,7 +166,7 @@ export const Settings: React.FC = () => {
                 </span>
               </div>
               <div className="flex flex-col items-center gap-2">
-                <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-accent group-hover:text-background transition-all">
+                <div className="p-3 bg-surface shadow-[var(--card-shadow)] border border-border rounded-2xl group-hover:bg-accent group-hover:text-background transition-all">
                   <Settings2 size={20} />
                 </div>
                 <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-accent transition-colors">Update</span>
@@ -179,7 +179,7 @@ export const Settings: React.FC = () => {
               <select 
                 value={profile.currency}
                 onChange={(e) => updateProfile({ currency: e.target.value })}
-                className="w-full bg-zinc-900 rounded-xl border border-white/10 focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
+                className="w-full bg-zinc-900 rounded-xl border border-border focus:border-accent p-3 text-zinc-100 font-medium text-sm focus:outline-none transition-all appearance-none"
               >
                 <option value="INR">INR (₹)</option>
                 <option value="USD">USD ($)</option>
@@ -195,7 +195,7 @@ export const Settings: React.FC = () => {
                 const next = themes[(themes.indexOf(profile.theme) + 1) % themes.length];
                 updateProfile({ theme: next });
               }}
-              className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors group text-left"
+              className="w-full flex items-center justify-between p-6 hover:bg-surface shadow-[var(--card-shadow)] border border-border transition-colors group text-left"
             >
               <div>
                 <span className="block font-bold text-zinc-100 mb-1">Appearance</span>
@@ -210,7 +210,7 @@ export const Settings: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-accent group-hover:text-background transition-all flex items-center justify-center">
+              <div className="p-3 bg-surface shadow-[var(--card-shadow)] border border-border rounded-2xl group-hover:bg-accent group-hover:text-background transition-all flex items-center justify-center">
                 {profile.theme === 'dark' ? <Moon size={18} /> : profile.theme === 'light' ? <Sun size={18} /> : <Monitor size={18} />}
               </div>
             </button>
@@ -218,7 +218,7 @@ export const Settings: React.FC = () => {
             {/* Notifications */}
             <button 
               onClick={handleToggleNotifications}
-              className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors group text-left"
+              className="w-full flex items-center justify-between p-6 hover:bg-surface shadow-[var(--card-shadow)] border border-border transition-colors group text-left"
             >
               <div>
                 <span className="block font-bold text-zinc-100 mb-1">Sentinel Alerts</span>
@@ -233,7 +233,7 @@ export const Settings: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div className={`p-3 rounded-2xl transition-all ${profile.notificationsEnabled ? 'bg-accent text-background' : 'bg-white/5 text-zinc-500 group-hover:bg-white/10'}`}>
+              <div className={`p-3 rounded-2xl transition-all ${profile.notificationsEnabled ? 'bg-accent text-background' : 'bg-surface shadow-[var(--card-shadow)] border border-border text-zinc-500 group-hover:bg-zinc-500/10'}`}>
                 <Bell size={18} />
               </div>
             </button>
@@ -246,7 +246,7 @@ export const Settings: React.FC = () => {
             <Database size={16} className="text-zinc-500" />
             <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">System Info</span>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col gap-4">
+          <div className="bg-surface shadow-[var(--card-shadow)] border border-border rounded-3xl p-6 flex flex-col gap-4">
             <div className="flex justify-between items-center">
               <span className="text-zinc-400 font-medium text-sm">Database Health</span>
               <div className="flex items-center gap-2">
@@ -256,7 +256,7 @@ export const Settings: React.FC = () => {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-zinc-400 font-medium text-sm">Version Tag</span>
-              <span className="text-zinc-100 font-mono text-sm bg-white/10 px-2 py-1 rounded-md">v1.2.0</span>
+              <span className="text-zinc-100 font-mono text-sm bg-zinc-500/10 px-2 py-1 rounded-md">v1.2.0</span>
             </div>
           </div>
         </section>
@@ -269,7 +269,7 @@ export const Settings: React.FC = () => {
 
         {/* Info Section */}
         <section className="pt-8">
-          <div className="p-6 bg-white/5 border border-white/10 rounded-3xl">
+          <div className="p-6 bg-surface shadow-[var(--card-shadow)] border border-border rounded-3xl">
             <div className="flex items-center gap-2 mb-4">
               <CheckCircle2 size={18} className="text-accent" />
               <span className="font-bold text-zinc-100">Privacy Verified</span>

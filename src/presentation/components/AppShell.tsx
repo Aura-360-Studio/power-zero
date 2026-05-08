@@ -79,7 +79,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-background flex justify-center overflow-hidden text-zinc-100 selection:bg-accent selection:text-background">
       {/* Mobile-first centered bounds */}
-      <div className="w-full max-w-md bg-background flex flex-col h-screen overflow-hidden border-x border-white/5 relative">
+      <div className="w-full max-w-md bg-background flex flex-col h-screen overflow-hidden border-x border border-border relative">
         
         {/* Main Content Area */}
         <main 
@@ -108,7 +108,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
         {/* Minimalist Floating Glass Dock */}
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[320px] z-40 px-4">
-          <nav className="bg-zinc-900/80 backdrop-blur-2xl border border-white/10 rounded-full p-2 flex justify-between items-center shadow-[0_25px_50px_-12px_rgba(0,0,0,0.7)]">
+          <nav className="bg-zinc-900/80 backdrop-blur-2xl border border-border rounded-full p-2 flex justify-between items-center shadow-[0_25px_50px_-12px_rgba(0,0,0,0.7)]">
             
             <NavButton view="dashboard" icon={LayoutGrid} />
             <NavButton view="archive" icon={History} />
@@ -131,7 +131,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         {/* Transient Exit Toast */}
         {showExitToast && (
           <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <div className="bg-zinc-800 text-zinc-100 px-6 py-3 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-3">
+            <div className="bg-zinc-800 text-zinc-100 px-6 py-3 rounded-2xl border border-border shadow-2xl flex items-center gap-3">
               <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
               <span className="text-sm font-bold tracking-tight">Press back again to exit</span>
             </div>

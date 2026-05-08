@@ -35,7 +35,7 @@ export const CategoryReports: React.FC = () => {
   if (activeSubs.length === 0) return null;
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-[2rem] p-8 mb-8">
+    <div className="bg-surface shadow-[var(--card-shadow)] border border-border rounded-[2rem] p-8 mb-8">
       <div className="flex justify-between items-start mb-10">
         <div>
           <h2 className="text-2xl font-bold tracking-tighter text-zinc-100 uppercase leading-none mb-2">

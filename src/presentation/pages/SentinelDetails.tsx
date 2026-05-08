@@ -96,7 +96,7 @@ export const SentinelDetails: React.FC = () => {
       </div>
 
       {/* Metrics Card */}
-      <div className="bg-white/5 border border-white/10 rounded-3xl p-8 mb-8">
+      <div className="bg-surface shadow-[var(--card-shadow)] border border-border rounded-3xl p-8 mb-8">
         <div className="flex flex-col mb-8">
           <span className="text-zinc-500 text-sm font-bold uppercase tracking-widest mb-1">Lifetime Impact</span>
           <div className="flex items-baseline gap-1">
@@ -104,7 +104,7 @@ export const SentinelDetails: React.FC = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-2 gap-8 border-t border-white/5 pt-8 mb-8">
+        <div className="grid grid-cols-2 gap-8 border-t border border-border pt-8 mb-8">
           <div>
             <span className="block text-zinc-500 text-xs font-bold uppercase tracking-wider mb-1">Daily Leak</span>
             <span className="text-zinc-100 font-mono text-xl">{formatCurrency(dailyLeak, profile.currency)}</span>
@@ -115,7 +115,7 @@ export const SentinelDetails: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 border-t border-white/5 pt-8">
+        <div className="grid grid-cols-2 gap-8 border-t border border-border pt-8">
           <div>
             <span className="block text-zinc-500 text-xs font-bold uppercase tracking-wider mb-1">Next Bill</span>
             <span className="text-zinc-100 font-mono">{new Date(subscription.nextBillingDate).toLocaleDateString()}</span>
@@ -130,7 +130,7 @@ export const SentinelDetails: React.FC = () => {
       </div>
 
       {/* Budget Contribution */}
-      <div className="bg-white/5 border border-white/10 rounded-3xl p-8 mb-8">
+      <div className="bg-surface shadow-[var(--card-shadow)] border border-border rounded-3xl p-8 mb-8">
         <div className="flex justify-between items-end mb-4">
           <span className="text-[10px] font-black uppercase tracking-[0.1em] text-zinc-500">Budget Used</span>
           <span className="text-accent text-xs font-bold">
@@ -142,7 +142,7 @@ export const SentinelDetails: React.FC = () => {
         
         {profile.monthlyBudget > 0 ? (
           <>
-            <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden mb-2">
+            <div className="h-2 w-full bg-surface shadow-[var(--card-shadow)] border border-border rounded-full overflow-hidden mb-2">
               <div 
                 className="h-full bg-accent transition-all duration-1000 ease-out" 
                 style={{ width: `${Math.min(((normalized.amount / normalized.cycleValue) / profile.monthlyBudget * 100), 100)}%` }}
@@ -163,16 +163,16 @@ export const SentinelDetails: React.FC = () => {
       </div>
 
       {/* Cancel Accordion */}
-      <div className="border border-white/10 rounded-2xl overflow-hidden">
+      <div className="border border-border rounded-2xl overflow-hidden">
         <button 
           onClick={() => setIsAccordionOpen(!isAccordionOpen)}
-          className="w-full flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 transition-colors"
+          className="w-full flex items-center justify-between p-4 bg-surface shadow-[var(--card-shadow)] border border-border hover:bg-zinc-500/10 transition-colors"
         >
           <span className="font-bold text-sm text-zinc-100">Sentinel Intelligence: How to Cancel</span>
           {isAccordionOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
         </button>
         {isAccordionOpen && (
-          <div className="p-4 text-sm text-zinc-400 leading-relaxed border-t border-white/10">
+          <div className="p-4 text-sm text-zinc-400 leading-relaxed border-t border border-border">
             <p className="mb-4">
               Our intelligence suggests this is a <strong>{subscription.category}</strong> subscription. 
               Usually, these can be managed through:

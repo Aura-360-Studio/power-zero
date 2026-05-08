@@ -15,12 +15,13 @@
   --zinc-800: #27272a;
   --zinc-900: #18181b;
   --border: rgba(255, 255, 255, 0.1);
+  --card-shadow: none;
 }
 
 .light {
-  --background: #ffffff;
-  --surface: #f4f4f5;
-  --accent: #CCFF00;
+  --background: #f4f4f5;
+  --surface: #ffffff;
+  --accent: #09090b;
   --zinc-100: #09090b;
   --zinc-200: #18181b;
   --zinc-300: #27272a;
@@ -31,6 +32,7 @@
   --zinc-800: #d4d4d8;
   --zinc-900: #e4e4e7;
   --border: rgba(0, 0, 0, 0.1);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 body {
@@ -54,6 +56,29 @@ body {
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  @keyframes floatUp {
+    0% {
+      opacity: 0;
+      transform: translateY(100vh) scale(0.5);
+    }
+    10% {
+      opacity: 0.3;
+    }
+    90% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-20vh) scale(1.5);
+    }
+  }
+
+  @keyframes lightningFlash {
+    0%, 95%, 98% { opacity: 0; }
+    96%, 99% { opacity: 0.8; }
+    100% { opacity: 0; }
   }
 }
 

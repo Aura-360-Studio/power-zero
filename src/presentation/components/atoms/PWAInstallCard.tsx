@@ -16,7 +16,7 @@ export const PWAInstallCard: React.FC = () => {
   if (!isIOS && !isInstallable) return null;
 
   return (
-    <div className="bg-gradient-to-br from-zinc-900 to-black border border-white/10 rounded-[2.5rem] p-8 relative overflow-hidden mb-12 group transition-all duration-500 hover:border-accent/30 shadow-2xl">
+    <div className="bg-gradient-to-br from-zinc-900 to-black border border-border rounded-[2.5rem] p-8 relative overflow-hidden mb-12 group transition-all duration-500 hover:border-accent/30 shadow-2xl">
       {/* Background Decorative Elements */}
       <div className="absolute -top-10 -right-10 w-40 h-40 bg-accent/5 blur-[80px] rounded-full group-hover:bg-accent/10 transition-colors duration-700" />
       <div className="absolute bottom-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity duration-700 transform group-hover:scale-110">
@@ -52,7 +52,7 @@ export const PWAInstallCard: React.FC = () => {
             className="w-full bg-accent text-background font-black py-4 rounded-2xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_15px_30px_rgba(204,255,0,0.25)] group/btn"
           >
             <Download size={20} strokeWidth={3} className="group-hover:animate-bounce" />
-            INSTALL SENTINEL
+            INSTALL ZHERO APP
           </button>
         ) : isIOS ? (
           <div className="space-y-4">

@@ -50,7 +50,7 @@ export const Pulse: React.FC = () => {
           </div>
           
           {alerts.length === 0 ? (
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
+            <div className="bg-surface shadow-[var(--card-shadow)] border border-border rounded-3xl p-8 flex flex-col items-center justify-center text-center">
               <ShieldCheck size={32} className="text-accent/40 mb-3" />
               <h3 className="text-zinc-100 font-bold mb-1">Protocol Stable</h3>
               <p className="text-zinc-500 text-sm max-w-[200px]">No critical leaks detected for the next 7 days.</p>
@@ -91,7 +91,7 @@ export const Pulse: React.FC = () => {
 
           <div className="relative">
             {/* Timeline Line */}
-            <div className="absolute left-[23px] top-4 bottom-4 w-px bg-white/5" />
+            <div className="absolute left-[23px] top-4 bottom-4 w-px bg-surface shadow-[var(--card-shadow)] border border-border" />
 
             <div className="space-y-6">
               {planner.length === 0 ? (
@@ -104,13 +104,13 @@ export const Pulse: React.FC = () => {
                     className="relative flex items-center gap-6 group cursor-pointer"
                   >
                     {/* Timeline Node */}
-                    <div className="relative z-10 w-12 h-12 bg-zinc-900 border border-white/10 rounded-2xl flex flex-col items-center justify-center group-hover:border-accent/50 transition-colors">
+                    <div className="relative z-10 w-12 h-12 bg-zinc-900 border border-border rounded-2xl flex flex-col items-center justify-center group-hover:border-accent/50 transition-colors">
                       <span className="text-[10px] font-black text-zinc-500 uppercase leading-none mb-0.5">{new Date(sub.nextBillingDate).toLocaleString('default', { month: 'short' })}</span>
                       <span className="text-sm font-black text-zinc-100 leading-none">{new Date(sub.nextBillingDate).getDate()}</span>
                     </div>
 
                     {/* Card */}
-                    <div className="flex-1 bg-white/5 border border-white/5 rounded-2xl p-4 flex items-center justify-between group-hover:bg-white/[0.08] transition-all">
+                    <div className="flex-1 bg-surface shadow-[var(--card-shadow)] border border-border rounded-2xl p-4 flex items-center justify-between group-hover:bg-white/[0.08] transition-all">
                       <div>
                         <h5 className="font-bold text-zinc-100 text-sm">{sub.name}</h5>
                         <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest">{sub.category}</p>

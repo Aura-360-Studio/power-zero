@@ -168,7 +168,17 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
       await backupService.importData(json);
       await get().fetchSubscriptions();
     } catch (err: any) {
-      set({ error: err.message || "Failed to import data", isLoading: false });
+      let errorMessage = err.message || "Failed to import data";
+      // Fallback parser in case raw JSON Zod errors still slip through
+      try {
+        if (errorMessage.startsWith('[') && errorMessage.includes('"code":')) {
+          const parsed = JSON.parse(errorMessage);
+          errorMessage = "Data validation failed: " + parsed.map((e: any) => `${e.path.join('.')}: ${e.message}`).join(' | ');
+        }
+      } catch (e) {
+        // Not a JSON string, ignore
+      }
+      set({ error: errorMessage, isLoading: false });
     }
   }
 }));

@@ -49,10 +49,10 @@ export const DashboardMetrics: React.FC = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
       
       {/* Large Circular Visual (Primary Card) */}
-      <div className="md:col-span-2 bg-white/5 border border-white/10 rounded-[2.5rem] p-8 flex flex-col items-center justify-center relative overflow-hidden">
+      <div className="md:col-span-2 bg-surface shadow-[var(--card-shadow)] border border-border rounded-[2.5rem] p-8 flex flex-col items-center justify-center relative overflow-hidden">
         
         {/* Hud View Switcher */}
-        <div className="absolute top-8 right-8 flex bg-black/40 p-1 rounded-full border border-white/5 z-30">
+        <div className="absolute top-8 right-8 flex bg-zinc-900/40 dark:bg-black/40 p-1 rounded-full border border-border z-30">
           {(['monthly', 'yearly'] as const).map((mode) => (
             <button
               key={mode}
@@ -80,7 +80,7 @@ export const DashboardMetrics: React.FC = () => {
           
           <svg className="w-44 h-44 relative z-10" viewBox="0 0 120 120">
             {/* Background Track */}
-            <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" strokeWidth="8" className="text-white/5" />
+            <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" strokeWidth="8" className="text-zinc-500/20" />
             
             {/* 1. Yellow Segment (0-80%) */}
             <circle 
@@ -160,7 +160,7 @@ export const DashboardMetrics: React.FC = () => {
       </div>
 
       {/* Dynamic Daily Cost Flow - Timeline Chart */}
-      <div className="md:col-span-2 bg-white/5 border border-white/10 rounded-[2rem] p-6 flex flex-col justify-between">
+      <div className="md:col-span-2 bg-surface shadow-[var(--card-shadow)] border border-border rounded-[2rem] p-6 flex flex-col justify-between">
         <div>
           <div className="flex justify-between items-start mb-6">
             <div>
@@ -180,12 +180,12 @@ export const DashboardMetrics: React.FC = () => {
                 <button 
                   key={i} 
                   onClick={() => setSelectedDayIndex(i)}
-                  className={`flex-1 rounded-full transition-all duration-300 relative group flex items-end justify-center ${isSelected ? 'bg-accent shadow-[0_0_15px_rgba(204,255,0,0.5)]' : 'bg-white/10 hover:bg-white/20'}`}
+                  className={`flex-1 rounded-full transition-all duration-300 relative group flex items-end justify-center ${isSelected ? 'bg-accent shadow-[0_0_15px_rgba(204,255,0,0.5)]' : 'bg-zinc-500/20 hover:bg-zinc-500/40'}`}
                   style={{ height: `${Math.max(heightPct, 5)}%` }} // Minimum 5% height so it's clickable even if 0
                 >
                   {/* Tooltip on hover for non-selected days */}
                   {!isSelected && (
-                    <div className="absolute -top-6 bg-zinc-800 text-[8px] font-bold px-2 py-1 rounded border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <div className="absolute -top-6 bg-zinc-800 text-[8px] font-bold px-2 py-1 rounded border border-border opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                       {day.dayName}
                     </div>
                   )}
@@ -195,7 +195,7 @@ export const DashboardMetrics: React.FC = () => {
           </div>
           
           {/* Day Labels */}
-          <div className="flex justify-between px-2 mb-6 border-b border-white/5 pb-6">
+          <div className="flex justify-between px-2 mb-6 border-b border border-border pb-6">
              {weeklyFlow.map((day, i) => (
                 <span key={i} className={`text-[8px] font-black uppercase transition-colors ${i === selectedDayIndex ? 'text-accent' : 'text-zinc-600'}`}>
                   {day.dayName.charAt(0)}
@@ -220,14 +220,14 @@ export const DashboardMetrics: React.FC = () => {
           {selectedDay.activeItems.length > 0 ? (
             <div className="space-y-2 max-h-[120px] overflow-y-auto custom-scrollbar pr-2">
               {selectedDay.activeItems.map((item, idx) => (
-                <div key={idx} className="flex justify-between items-center bg-black/20 p-2.5 rounded-xl border border-white/5">
+                <div key={idx} className="flex justify-between items-center bg-zinc-900/10 dark:bg-black/20 p-2.5 rounded-xl border border-border">
                   <span className="text-xs font-bold text-zinc-300">{item.name}</span>
                   <span className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">{formatCurrency(item.dailyCost, profile.currency)}</span>
                 </div>
               ))}
             </div>
           ) : (
-             <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-center text-xs font-bold text-zinc-600">
+             <div className="bg-zinc-900/10 dark:bg-black/20 p-4 rounded-xl border border-border text-center text-xs font-bold text-zinc-600">
                No active drains detected on this day.
              </div>
           )}

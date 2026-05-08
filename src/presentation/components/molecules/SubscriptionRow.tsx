@@ -16,7 +16,7 @@ export const SubscriptionRow: React.FC<SubscriptionRowProps> = ({ subscription, 
   return (
     <div 
       onClick={() => subscription.id && navigate('details', { id: subscription.id })}
-      className="flex flex-row items-center justify-between py-4 border-b border-white/5 last:border-0 hover:bg-white/5 px-2 rounded-xl transition-all cursor-pointer group"
+      className="flex flex-row items-center justify-between py-4 border-b border border-border last:border-0 hover:bg-surface shadow-[var(--card-shadow)] border border-border px-2 rounded-xl transition-all cursor-pointer group"
     >
       
       {/* Left Column: Context */}

@@ -114,38 +114,43 @@ export const BillingCalculator = {
   },
 
   /**
-   * Compatibility layer to transition legacy fixed-cycles to the new flexible system.
+   * Compatibility layer to transition legacy fixed-cycles and categories to the new flexible system.
    */
   migrateLegacySubscription: (sub: any): Subscription => {
-    if (sub.cycleType && sub.cycleValue && sub.startDate) return sub as Subscription;
+    // 1. Map Legacy Categories
+    const validCategories = ["UTILITIES", "ENTERTAINMENT", "TRAVEL", "FINANCE", "CUSTOM"];
+    let category = sub.category || 'CUSTOM';
+    if (!validCategories.includes(category)) {
+      category = 'CUSTOM';
+    }
 
-    let cycleType: CycleType = 'CALENDAR_MONTH';
-    let cycleValue = 1;
+    // 2. Handle Cycle Migration
+    let cycleType: CycleType = sub.cycleType || 'CALENDAR_MONTH';
+    let cycleValue = sub.cycleValue || 1;
 
-    switch (sub.cycle) {
-      case 'DAILY':
-        cycleType = 'DAYS';
-        cycleValue = 1;
-        break;
-      case 'WEEKLY':
-        cycleType = 'WEEKS';
-        cycleValue = 1;
-        break;
-      case 'MONTHLY':
-        cycleType = 'CALENDAR_MONTH';
-        cycleValue = 1;
-        break;
-      case 'YEARLY':
-        cycleType = 'CALENDAR_YEAR';
-        cycleValue = 1;
-        break;
+    if (!sub.cycleType && sub.cycle) {
+      switch (sub.cycle) {
+        case 'DAILY':
+          cycleType = 'DAYS';
+          break;
+        case 'WEEKLY':
+          cycleType = 'WEEKS';
+          break;
+        case 'MONTHLY':
+          cycleType = 'CALENDAR_MONTH';
+          break;
+        case 'YEARLY':
+          cycleType = 'CALENDAR_YEAR';
+          break;
+      }
     }
 
     return {
       ...sub,
+      category,
       cycleType,
       cycleValue,
-      startDate: sub.nextBillingDate || new Date().toISOString(),
+      startDate: sub.startDate || sub.nextBillingDate || new Date().toISOString(),
       nextBillingDate: sub.nextBillingDate || new Date().toISOString()
     };
   },

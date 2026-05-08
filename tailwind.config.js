@@ -11,6 +11,7 @@ export default {
         background: 'var(--background)',
         surface: 'var(--surface)',
         accent: 'var(--accent)',
+        border: 'var(--border)',
         zinc: {
           100: 'var(--zinc-100)',
           200: 'var(--zinc-200)',

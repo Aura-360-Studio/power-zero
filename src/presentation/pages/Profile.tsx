@@ -39,7 +39,7 @@ export const Profile: React.FC = () => {
 
       <div className="space-y-8">
         {/* Identity Block */}
-        <section className="bg-white/5 border border-white/10 rounded-3xl p-6 relative overflow-hidden group">
+        <section className="bg-surface shadow-[var(--card-shadow)] border border-border rounded-3xl p-6 relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-50" />
           <div className="relative flex items-center gap-6">
             <div className="w-20 h-20 rounded-full border-2 border-background bg-zinc-800 flex items-center justify-center text-2xl font-black text-accent tracking-tighter shadow-[0_0_20px_rgba(204,255,0,0.2)]">
@@ -80,7 +80,7 @@ export const Profile: React.FC = () => {
         
         {/* Sentinel Briefing */}
         <section className="pb-10">
-          <div className="bg-zinc-900 border border-white/5 rounded-3xl p-6 relative overflow-hidden">
+          <div className="bg-zinc-900 border border-border rounded-3xl p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8 opacity-5">
               <ShieldCheck size={100} className="text-accent" />
             </div>
@@ -102,7 +102,7 @@ export const Profile: React.FC = () => {
                     We don't use the word "Subscription" because Zhero is built on the principle of active neutralization. Instead of passively spending, you are deploying Sentinels to ensure that every rupee spent is intentional and visible.
                   </p>
                 </div>
-                <div className="pt-2 border-t border-white/5">
+                <div className="pt-2 border-t border border-border">
                   <p className="text-[10px] text-zinc-600 font-mono">
                     IDENTITY: LOCAL // DATA: ENCRYPTED // STATUS: SECURE
                   </p>
@@ -112,9 +112,29 @@ export const Profile: React.FC = () => {
           </div>
         </section>
 
+        {/* Aura Labs */}
+        <section className="pb-10">
+          <div className="bg-surface shadow-[var(--card-shadow)] border border-border rounded-3xl p-6 relative overflow-hidden">
+            <div className="relative z-10">
+              <h3 className="text-zinc-100 font-bold mb-2 text-sm">🧪 Aura Labs</h3>
+              <p className="text-zinc-500 text-xs leading-relaxed mb-4">
+                This app is from Aura Labs. For more experiments and cutting-edge projects, check out the lab.
+              </p>
+              <a 
+                href="https://labs.aura360studio.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block bg-accent text-background font-bold text-xs px-4 py-2 rounded-xl hover:scale-105 transition-transform"
+              >
+                Visit Aura Labs
+              </a>
+            </div>
+          </div>
+        </section>
+
         <PWAInstallCard />
 
-        <div className="py-10 text-center border-t border-white/5">
+        <div className="py-10 text-center border-t border border-border">
           <a 
             href="https://aura360studio.com/showcase" 
             target="_blank" 

@@ -42,7 +42,7 @@ export const Archives: React.FC = () => {
         </div>
 
         {archivedSubscriptions.length === 0 ? (
-          <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-3xl">
+          <div className="py-20 text-center border-2 border-dashed border border-border rounded-3xl">
             <Archive size={40} className="mx-auto mb-4 opacity-10" />
             <p className="text-zinc-500">No archived subscriptions found.</p>
           </div>
